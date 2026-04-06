@@ -1,4 +1,4 @@
-namespace HabitTrackerAspNetMVCWebApp.Models;
+namespace AspnetCoreMvcFull.Models;
 
 public class ErrorViewModel
 {
