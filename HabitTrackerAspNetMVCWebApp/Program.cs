@@ -1,19 +1,23 @@
+using HabitTrackerAspNetMVCWebApp.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace HabitTrackerAspNetMVCWebApp;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-       
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         builder.Services.AddControllersWithViews();
         builder.Services.AddHttpContextAccessor();
 
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")));
+
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
@@ -27,9 +31,9 @@ public class Program
 
         app.MapStaticAssets();
         app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
-        app.Run();        
+        app.Run();
     }
 }
