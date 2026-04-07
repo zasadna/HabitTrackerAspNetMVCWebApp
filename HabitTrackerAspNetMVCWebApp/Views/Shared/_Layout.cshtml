@@ -3,59 +3,109 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HabitTrackerAspNetMVCWebApp</title>
-
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - HabitTracker</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HabitTrackerAspNetMVCWebApp.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .app-sidebar {
+            min-height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 1.5rem 1rem;
+        }
+
+        .app-brand {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #4f46e5;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            color: #111827;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        .app-nav a:hover {
+            background-color: #eef2ff;
+            color: #4338ca;
+        }
+
+        .app-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .app-content {
+            padding: 2rem;
+        }
+
+        .app-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+        }
+
+        .app-footer {
+            padding: 1rem 2rem;
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+    </style>
 
     @RenderSection("VendorStyles", required: false)
     @RenderSection("PageStyles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HabitTrackerAspNetMVCWebApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Calendar">Calendar</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
     <div class="container-fluid">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        <div class="row g-0">
+            <aside class="col-md-3 col-lg-2 app-sidebar">
+                <a asp-controller="Home" asp-action="Index" class="app-brand">HabitTracker</a>
+
+                <nav class="app-nav">
+                    <a asp-controller="Home" asp-action="Index">Home</a>
+                    <a asp-controller="Pages" asp-action="Calendar">Calendar</a>
+                    <a asp-controller="Pages" asp-action="Kanban">Kanban</a>
+                    <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </nav>
+            </aside>
+
+            <main class="col-md-9 col-lg-10">
+                <div class="app-header">
+                    @ViewData["Title"]
+                </div>
+
+                <div class="app-content">
+                    <div class="app-card">
+                        @RenderBody()
+                    </div>
+                </div>
+
+                <div class="app-footer">
+                    &copy; 2026 - HabitTrackerAspNetMVCWebApp
+                </div>
+            </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - HabitTrackerAspNetMVCWebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("VendorScripts", required: false)
     @RenderSection("PageScripts", required: false)
