@@ -142,7 +142,6 @@ D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Deb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Azure.Core.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Azure.Identity.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Humanizer.dll
-D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.Build.Framework.dll

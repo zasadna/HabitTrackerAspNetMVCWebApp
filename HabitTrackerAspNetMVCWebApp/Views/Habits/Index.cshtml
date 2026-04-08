@@ -1,0 +1,48 @@
+﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
+
+@{
+    ViewData["Title"] = "Habits";
+}
+
+<h1 class="mb-4">Habits</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Habit</a>
+</p>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No habits found yet.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Start Date</th>
+                <th>Completed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.IsCompleted</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
