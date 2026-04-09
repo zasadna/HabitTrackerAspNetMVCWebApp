@@ -1,7 +1,9 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using HabitTrackerAspNetMVCWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 using HabitTrackerAspNetMVCWebApp.Data;
+using HabitTrackerAspNetMVCWebApp.Models;
 
 namespace HabitTrackerAspNetMVCWebApp.Controllers
 {
@@ -14,22 +16,19 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             _context = context;
         }
 
-        // GET: Habits
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var habits = _context.Habits.ToList();
-            return View(habits);
+            return View(await _context.Habits.ToListAsync());
         }
 
-        // GET: Habits/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var habit = _context.Habits.FirstOrDefault(h => h.Id == id);
+            var habit = await _context.Habits.FirstOrDefaultAsync(m => m.Id == id);
 
             if (habit == null)
             {
@@ -39,37 +38,33 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return View(habit);
         }
 
-        // GET: Habits/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Habits/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Habit habit)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,IsCompleted")] Habit habit)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Habits.Add(habit);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return View(habit);
             }
 
-            return View(habit);
+            _context.Add(habit);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Habits/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var habit = _context.Habits.Find(id);
-
+            var habit = await _context.Habits.FindAsync(id);
             if (habit == null)
             {
                 return NotFound();
@@ -78,35 +73,46 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return View(habit);
         }
 
-        // POST: Habits/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Habit habit)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,IsCompleted")] Habit habit)
         {
             if (id != habit.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Habits.Update(habit);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return View(habit);
             }
 
-            return View(habit);
+            try
+            {
+                _context.Update(habit);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!HabitExists(habit.Id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Habits/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var habit = _context.Habits.FirstOrDefault(h => h.Id == id);
+            var habit = await _context.Habits.FirstOrDefaultAsync(m => m.Id == id);
 
             if (habit == null)
             {
@@ -116,20 +122,23 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return View(habit);
         }
 
-        // POST: Habits/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var habit = _context.Habits.Find(id);
-
+            var habit = await _context.Habits.FindAsync(id);
             if (habit != null)
             {
                 _context.Habits.Remove(habit);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool HabitExists(int id)
+        {
+            return _context.Habits.Any(e => e.Id == id);
         }
     }
 }
