@@ -1,0 +1,41 @@
+﻿@model HabitTrackerAspNetMVCWebApp.Models.Habit
+
+@{
+    ViewData["Title"] = "Habit Details";
+}
+
+<h1 class="mb-4">Habit Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title mb-4">@Model.Name</h4>
+
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3">Start Date</dt>
+            <dd class="col-sm-9">@Model.StartDate.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">Completed</dt>
+            <dd class="col-sm-9">
+                @if (Model.IsCompleted)
+                {
+                    <span class="badge text-bg-success">Yes</span>
+                }
+                else
+                {
+                    <span class="badge text-bg-secondary">No</span>
+                }
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
