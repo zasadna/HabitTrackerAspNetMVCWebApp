@@ -1,15 +1,16 @@
-using HabitTrackerAspNetMVCWebApp.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using HabitTrackerAspNetMVCWebApp.Models;
 
 namespace HabitTrackerAspNetMVCWebApp.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<Habit> Habits { get; set; } = null!;
+        public DbSet<Habit> Habits { get; set; }
     }
 }
