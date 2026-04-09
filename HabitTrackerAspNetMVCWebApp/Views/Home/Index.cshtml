@@ -1,8 +1,56 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
+
+@{
+    ViewData["Title"] = "Habits";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Habits</h1>
+    <a asp-action="Create" class="btn btn-primary">Create New Habit</a>
 </div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info mb-0">
+        No habits found yet.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Start Date</th>
+                <th>Completed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>
+                    @if (item.IsCompleted)
+                    {
+                        <span class="badge text-bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary">No</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

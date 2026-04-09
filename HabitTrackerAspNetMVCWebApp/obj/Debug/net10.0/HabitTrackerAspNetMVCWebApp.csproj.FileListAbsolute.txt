@@ -94,7 +94,6 @@ D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Deb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\ref\HabitTrackerAspNetMVCWebApp.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\HabitTrackerAspNetMVCWebApp.sourcelink.json
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\862223zsrt-{0}-0t8u7xtqkq-0t8u7xtqkq.gz
-D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\d7uuek2r8g-{0}-cga4aadds4-cga4aadds4.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\2qo303j8kq-{0}-qyw40ro1pf-qyw40ro1pf.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\n24n8ht6cv-{0}-ak43mbpzvl-ak43mbpzvl.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\nnlmjj43vr-{0}-lvmfy8bedq-lvmfy8bedq.gz
@@ -265,3 +264,4 @@ D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Deb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\HabitTra.4889FFD4.Up2Date
+D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\d7uuek2r8g-{0}-1jhmc0rdg0-1jhmc0rdg0.gz

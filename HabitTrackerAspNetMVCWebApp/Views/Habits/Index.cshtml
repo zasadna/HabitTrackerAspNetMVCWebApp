@@ -4,22 +4,21 @@
     ViewData["Title"] = "Habits";
 }
 
-<h1 class="mb-4">Habits</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Habit</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Habits</h1>
+    <a href="/Habits/Create" class="btn btn-primary">Create New Habit</a>
+</div>
 
 @if (Model == null || !Model.Any())
 {
-    <div class="alert alert-info">
+    <div class="alert alert-info mb-0">
         No habits found yet.
     </div>
 }
 else
 {
-    <table class="table table-bordered table-striped">
-        <thead>
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
             <tr>
                 <th>Name</th>
                 <th>Description</th>
@@ -35,11 +34,20 @@ else
                 <td>@item.Name</td>
                 <td>@item.Description</td>
                 <td>@item.StartDate.ToShortDateString()</td>
-                <td>@item.IsCompleted</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    @if (item.IsCompleted)
+                    {
+                        <span class="badge text-bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-secondary">No</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                 </td>
             </tr>
         }

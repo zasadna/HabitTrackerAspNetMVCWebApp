@@ -30,8 +30,16 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[D:/projects/2026/HabitTrackerAspNetMVCWebApp/HabitTrackerAspNetMVCWebApp/Views/Habits/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFiaXRzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/projects/2026/HabitTrackerAspNetMVCWebApp/HabitTrackerAspNetMVCWebApp/Views/Habits/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFiaXRzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/projects/2026/HabitTrackerAspNetMVCWebApp/HabitTrackerAspNetMVCWebApp/Views/Habits/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSGFiaXRzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/projects/2026/HabitTrackerAspNetMVCWebApp/HabitTrackerAspNetMVCWebApp/Views/Home/Index.cshtml]
