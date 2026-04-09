@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HabitTrackerAspNetMVCWebApp.Data;
 using HabitTrackerAspNetMVCWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HabitTrackerAspNetMVCWebApp.Controllers
 {
+    [Authorize]
     public class HabitsController : Controller
     {
         private readonly ApplicationDbContext _context;

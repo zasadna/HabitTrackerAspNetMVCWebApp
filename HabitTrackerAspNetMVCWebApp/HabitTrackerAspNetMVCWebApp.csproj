@@ -9,9 +9,6 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Services\" />
-    <Folder Include="Views\Areas\" />
-    <Folder Include="Views\Areas\Identity\" />
-    <Folder Include="Views\Areas\Identity\Pages\" />
     <Folder Include="Views\Habits\" />
     <Folder Include="wwwroot\assets\" />
   </ItemGroup>

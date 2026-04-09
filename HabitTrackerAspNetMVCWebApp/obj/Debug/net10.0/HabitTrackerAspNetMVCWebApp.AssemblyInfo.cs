@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HabitTrackerAspNetMVCWebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c55fc2820f2b8050901d0cc73de8ee9bd8ae2a0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5bd3c365f0b8ce5f6da84b87e838c76bbef6383b")]
 [assembly: System.Reflection.AssemblyProductAttribute("HabitTrackerAspNetMVCWebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HabitTrackerAspNetMVCWebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

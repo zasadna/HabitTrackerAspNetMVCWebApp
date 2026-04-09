@@ -29,24 +29,25 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.SeedRolesAsync(services);
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    Console.WriteLine("=== ROLES FROM DB ===");
+//     Console.WriteLine("=== ROLES FROM DB ===");
 
-    var roles = db.Roles.ToList();
+//     var roles = db.Roles.ToList();
 
-    if (!roles.Any())
-    {
-        Console.WriteLine("NO ROLES FOUND");
-    }
+//     if (!roles.Any())
+//     {
+//         Console.WriteLine("NO ROLES FOUND");
+//     }
 
-    foreach (var role in roles)
-    {
-        Console.WriteLine($"Role: {role.Name}");
-    }
-}
+//     foreach (var role in roles)
+//     {
+//         Console.WriteLine($"Role: {role.Name}");
+//     }
+// }
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
