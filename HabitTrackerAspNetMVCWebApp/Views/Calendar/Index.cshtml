@@ -1,0 +1,158 @@
+﻿@model HabitTrackerAspNetMVCWebApp.ViewModels.CalendarViewModel
+
+@{
+    ViewData["Title"] = "Calendar";
+}
+
+@section PageStyles {
+    <style>
+        .calendar-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-header {
+            font-weight: 600;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+        }
+
+        .calendar-day {
+            min-height: 180px;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 10px;
+            background-color: #ffffff;
+        }
+
+        .calendar-day.other-month {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #4f46e5;
+        }
+
+        .day-number {
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .habit-item {
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            padding: 4px 6px;
+            border-radius: 8px;
+            word-break: break-word;
+        }
+
+        .planned-item {
+            background-color: #fff7d6;
+        }
+
+        .completed-item {
+            background-color: #dcfce7;
+        }
+
+        @@media (max-width: 992px) {
+            .calendar-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    </style>
+}
+
+<div class="calendar-toolbar">
+    <a asp-action="Index"
+       asp-route-year="@Model.PrevYear"
+       asp-route-month="@Model.PrevMonth"
+       class="btn btn-outline-primary">
+        Previous
+    </a>
+
+    <h2 class="mb-0">@Model.MonthName</h2>
+
+    <a asp-action="Index"
+       asp-route-year="@Model.NextYear"
+       asp-route-month="@Model.NextMonth"
+       class="btn btn-outline-primary">
+        Next
+    </a>
+</div>
+
+<div class="calendar-grid mb-2">
+    <div class="calendar-header">Mon</div>
+    <div class="calendar-header">Tue</div>
+    <div class="calendar-header">Wed</div>
+    <div class="calendar-header">Thu</div>
+    <div class="calendar-header">Fri</div>
+    <div class="calendar-header">Sat</div>
+    <div class="calendar-header">Sun</div>
+</div>
+
+<div class="calendar-grid">
+    @foreach (var day in Model.Days)
+    {
+        var cssClass = "calendar-day";
+
+        if (!day.IsCurrentMonth)
+        {
+            cssClass += " other-month";
+        }
+
+        if (day.IsToday)
+        {
+            cssClass += " today";
+        }
+
+        <div class="@cssClass">
+            <div class="day-number">@day.Date.Day</div>
+
+            <div class="section-title">Planned</div>
+            @if (day.PlannedHabits.Any())
+            {
+                @foreach (var habit in day.PlannedHabits)
+                {
+                    <div class="habit-item planned-item">@habit</div>
+                }
+            }
+            else
+            {
+                <div class="text-muted small">No planned habits</div>
+            }
+
+            <div class="section-title">Completed</div>
+            @if (day.CompletedHabits.Any())
+            {
+                @foreach (var habit in day.CompletedHabits)
+                {
+                    <div class="habit-item completed-item">@habit</div>
+                }
+            }
+            else
+            {
+                <div class="text-muted small">No completed habits</div>
+            }
+        </div>
+    }
+</div>

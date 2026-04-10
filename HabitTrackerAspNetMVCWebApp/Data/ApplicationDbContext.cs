@@ -12,6 +12,7 @@ namespace HabitTrackerAspNetMVCWebApp.Data
         }
 
         public DbSet<Habit> Habits { get; set; }
+        public DbSet<HabitLog> HabitLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -19,18 +20,19 @@ namespace HabitTrackerAspNetMVCWebApp.Data
 
             builder.Entity<Habit>()
                 .HasOne(h => h.User)
-                .WithMany(u => u.Habits)
+                .WithMany()
                 .HasForeignKey(h => h.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Habit>()
-                .Property(h => h.Title)
-                .IsRequired()
-                .HasMaxLength(100);
+            builder.Entity<HabitLog>()
+                .HasOne(hl => hl.Habit)
+                .WithMany(h => h.HabitLogs)
+                .HasForeignKey(hl => hl.HabitId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Habit>()
-                .Property(h => h.Description)
-                .HasMaxLength(500);
+            builder.Entity<HabitLog>()
+                .HasIndex(hl => new { hl.HabitId, hl.LogDate })
+                .IsUnique();
         }
     }
 }

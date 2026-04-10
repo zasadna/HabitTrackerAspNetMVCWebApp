@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,11 +35,11 @@ namespace HabitTrackerAspNetMVCWebApp.Models
         [Display(Name = "End Date")]
         public DateTime? EndDate { get; set; }
 
-        // IMPORTANT:
-        // UserId is assigned in controller, not entered by user in the form.
         public string UserId { get; set; } = string.Empty;
 
         [ForeignKey("UserId")]
         public ApplicationUser? User { get; set; }
+
+        public ICollection<HabitLog> HabitLogs { get; set; } = new List<HabitLog>();
     }
 }

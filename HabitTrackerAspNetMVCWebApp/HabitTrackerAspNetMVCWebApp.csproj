@@ -9,6 +9,8 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Services\" />
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\Calendar\" />
     <Folder Include="Views\Habits\" />
     <Folder Include="wwwroot\assets\" />
   </ItemGroup>
