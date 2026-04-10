@@ -1,10 +1,11 @@
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using HabitTrackerAspNetMVCWebApp.Data;
 using HabitTrackerAspNetMVCWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HabitTrackerAspNetMVCWebApp.Controllers
 {
@@ -18,9 +19,20 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             _context = context;
         }
 
+        private string GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+        }
+
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Habits.ToListAsync());
+            var userId = GetCurrentUserId();
+
+            var habits = await _context.Habits
+                .Where(h => h.UserId == userId)
+                .ToListAsync();
+
+            return View(habits);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -30,7 +42,10 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return NotFound();
             }
 
-            var habit = await _context.Habits.FirstOrDefaultAsync(m => m.Id == id);
+            var userId = GetCurrentUserId();
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
 
             if (habit == null)
             {
@@ -54,6 +69,8 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return View(habit);
             }
 
+            habit.UserId = GetCurrentUserId();
+
             _context.Add(habit);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -66,7 +83,11 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return NotFound();
             }
 
-            var habit = await _context.Habits.FindAsync(id);
+            var userId = GetCurrentUserId();
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == userId);
+
             if (habit == null)
             {
                 return NotFound();
@@ -89,14 +110,29 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return View(habit);
             }
 
+            var userId = GetCurrentUserId();
+
+            var existingHabit = await _context.Habits
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == userId);
+
+            if (existingHabit == null)
+            {
+                return NotFound();
+            }
+
+            existingHabit.Name = habit.Name;
+            existingHabit.Description = habit.Description;
+            existingHabit.StartDate = habit.StartDate;
+            existingHabit.IsCompleted = habit.IsCompleted;
+
             try
             {
-                _context.Update(habit);
+                _context.Update(existingHabit);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!HabitExists(habit.Id))
+                if (!HabitExists(id, userId))
                 {
                     return NotFound();
                 }
@@ -114,7 +150,10 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return NotFound();
             }
 
-            var habit = await _context.Habits.FirstOrDefaultAsync(m => m.Id == id);
+            var userId = GetCurrentUserId();
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
 
             if (habit == null)
             {
@@ -128,7 +167,11 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var habit = await _context.Habits.FindAsync(id);
+            var userId = GetCurrentUserId();
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == userId);
+
             if (habit != null)
             {
                 _context.Habits.Remove(habit);
@@ -138,9 +181,9 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool HabitExists(int id)
+        private bool HabitExists(int id, string userId)
         {
-            return _context.Habits.Any(e => e.Id == id);
+            return _context.Habits.Any(e => e.Id == id && e.UserId == userId);
         }
     }
 }

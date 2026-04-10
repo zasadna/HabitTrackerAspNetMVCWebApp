@@ -267,7 +267,6 @@ D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Deb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\d7uuek2r8g-{0}-m9v5qvaw4s-m9v5qvaw4s.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.UI.dll
-D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\bin\Debug\net10.0\Microsoft.Extensions.FileProviders.Embedded.dll
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\HabitTrackerAspNetMVCWebApp.MvcApplicationPartsAssemblyInfo.cs
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\ofa40bqe71-{0}-b9sayid5wm-b9sayid5wm.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\j9swiz3yzq-{0}-90yqlj465b-90yqlj465b.gz
