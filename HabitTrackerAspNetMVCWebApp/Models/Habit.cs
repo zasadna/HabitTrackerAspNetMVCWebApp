@@ -24,6 +24,7 @@ namespace HabitTrackerAspNetMVCWebApp.Models
         [Display(Name = "Completed")]
         public bool IsCompleted { get; set; }
 
-        public string UserId { get; set; }
+        // Identity user owner
+        public string UserId { get; set; } = string.Empty;
     }
 }
