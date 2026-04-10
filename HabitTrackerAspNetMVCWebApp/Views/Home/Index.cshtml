@@ -1,56 +1,57 @@
 ﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
 
 @{
-    ViewData["Title"] = "Habits";
+    ViewData["Title"] = "Home Page";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">Habits</h1>
-    <a asp-action="Create" class="btn btn-primary">Create New Habit</a>
+<div class="text-center mb-4">
+    <h1 class="display-4">Habit Tracker</h1>
+    <p>Build better routines and track your progress.</p>
 </div>
 
-@if (Model == null || !Model.Any())
+@if (User.Identity != null && User.Identity.IsAuthenticated)
 {
-    <div class="alert alert-info mb-0">
-        No habits found yet.
+    <div class="mb-4">
+        <a asp-controller="Habits" asp-action="Index" class="btn btn-primary">Go to My Habits</a>
+        <a asp-controller="Habits" asp-action="Create" class="btn btn-success">Create Habit</a>
     </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <h2 class="mb-3">Recent Habits</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Frequency</th>
+                    <th>Start Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var habit in Model)
+            {
+                <tr>
+                    <td>@habit.Title</td>
+                    <td>@habit.Status</td>
+                    <td>@habit.Frequency</td>
+                    <td>@habit.StartDate.ToShortDateString()</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>You do not have any habits yet.</p>
+    }
 }
 else
 {
-    <table class="table table-bordered table-striped align-middle">
-        <thead class="table-light">
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Start Date</th>
-                <th>Completed</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td>@item.StartDate.ToShortDateString()</td>
-                <td>
-                    @if (item.IsCompleted)
-                    {
-                        <span class="badge text-bg-success">Yes</span>
-                    }
-                    else
-                    {
-                        <span class="badge text-bg-secondary">No</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div class="text-center">
+        <p>Please register or log in to manage your habits.</p>
+        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Login</a>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Register</a>
+    </div>
 }

@@ -1,82 +1,60 @@
 ﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
 
 @{
-    ViewData["Title"] = "Habits";
+    ViewData["Title"] = "My Habits";
 }
 
-<h1>Habits</h1>
+<h1>My Habits</h1>
+<p>Is Admin: @User.IsInRole("Admin")</p>
+<p>User: @User.Identity?.Name</p>
+    <p>
+        @if (User.IsInRole("Admin"))
+            {
+            <a asp-action="CleanupOrphans" class="btn btn-danger">
+                Cleanup Orphans
+            </a>
+        }
+    </p>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New Habit</a>
 </p>
 
-<table class="table table-bordered table-striped align-middle">
-    <thead class="table-light">
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-            <th>@Html.DisplayNameFor(model => model.IsCompleted)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model)
+@if (!Model.Any())
 {
-        <tr>
-             <td
-                style="max-width: 200px; cursor: pointer; vertical-align: top;"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                data-bs-custom-class="habit-tooltip"
-                title="@item.Name">
-                @(item.Name != null && item.Name.Length > 50 ? item.Name.Substring(0, 50) + "..." : item.Name)
-            </td>
-
-            <td
-                style="max-width: 300px; cursor: pointer; vertical-align: top;"
-                data-bs-toggle="tooltip"
-                data-bs-placement="right"
-                title="@item.Description">
-                @(item.Description != null && item.Description.Length > 80
-                    ? item.Description.Substring(0, 80) + "..."
-                    : item.Description)
-            </td>
-
-            <td>@item.StartDate.ToString("dd.MM.yyyy")</td>
-
-            <td>
-                @if (item.IsCompleted)
-                {
-                    <span class="badge bg-success">Yes</span>
-                }
-                else
-                {
-                    <span class="badge bg-secondary">No</span>
-                }
-            </td>
-
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
-            </td>
-        </tr>
+    <div class="alert alert-info">
+        You do not have any habits yet.
+    </div>
 }
-    </tbody>
-</table>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-
-            tooltipTriggerList.forEach(function (el) {
-                new bootstrap.Tooltip(el, {
-                    placement: 'right',
-                    fallbackPlacements: [] 
-                });
-            });
-        });
-    </script>
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Frequency</th>
+                <th>Status</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var habit in Model)
+        {
+            <tr>
+                <td>@habit.Title</td>
+                <td>@habit.Frequency</td>
+                <td>@habit.Status</td>
+                <td>@habit.StartDate.ToShortDateString()</td>
+                <td>@(habit.EndDate?.ToShortDateString() ?? "-")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@habit.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@habit.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@habit.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>       
 }

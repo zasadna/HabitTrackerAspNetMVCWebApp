@@ -30,6 +30,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
             var habits = await _context.Habits
                 .Where(h => h.UserId == userId)
+                .OrderBy(h => h.StartDate)
                 .ToListAsync();
 
             return View(habits);
@@ -45,7 +46,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             var userId = GetCurrentUserId();
 
             var habit = await _context.Habits
-                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == userId);
 
             if (habit == null)
             {
@@ -62,7 +63,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,IsCompleted")] Habit habit)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Frequency,Status,StartDate,EndDate")] Habit habit)
         {
             if (!ModelState.IsValid)
             {
@@ -71,8 +72,9 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
             habit.UserId = GetCurrentUserId();
 
-            _context.Add(habit);
+            _context.Habits.Add(habit);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -98,7 +100,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,StartDate,IsCompleted")] Habit habit)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Frequency,Status,StartDate,EndDate")] Habit habit)
         {
             if (id != habit.Id)
             {
@@ -120,10 +122,12 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return NotFound();
             }
 
-            existingHabit.Name = habit.Name;
+            existingHabit.Title = habit.Title;
             existingHabit.Description = habit.Description;
+            existingHabit.Frequency = habit.Frequency;
+            existingHabit.Status = habit.Status;
             existingHabit.StartDate = habit.StartDate;
-            existingHabit.IsCompleted = habit.IsCompleted;
+            existingHabit.EndDate = habit.EndDate;
 
             try
             {
@@ -153,7 +157,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             var userId = GetCurrentUserId();
 
             var habit = await _context.Habits
-                .FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == userId);
 
             if (habit == null)
             {
@@ -183,7 +187,22 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
         private bool HabitExists(int id, string userId)
         {
-            return _context.Habits.Any(e => e.Id == id && e.UserId == userId);
+            return _context.Habits.Any(h => h.Id == id && h.UserId == userId);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CleanupOrphans()
+        {
+            var orphanHabits = _context.Habits
+                .Where(h => string.IsNullOrEmpty(h.UserId) ||
+                            !_context.Users.Any(u => u.Id == h.UserId));
+
+            var count = await orphanHabits.CountAsync();
+
+            _context.Habits.RemoveRange(orphanHabits);
+            await _context.SaveChangesAsync();
+
+            return Content($"Removed {count} orphan habits");
         }
     }
 }

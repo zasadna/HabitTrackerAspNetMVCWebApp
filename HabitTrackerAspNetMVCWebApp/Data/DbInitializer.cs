@@ -8,7 +8,7 @@ namespace HabitTrackerAspNetMVCWebApp.Data
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string[] roles = { "Admin", "Manager", "Visitor" };
+            string[] roles = new[] { "Admin", "User" };
 
             foreach (var role in roles)
             {
