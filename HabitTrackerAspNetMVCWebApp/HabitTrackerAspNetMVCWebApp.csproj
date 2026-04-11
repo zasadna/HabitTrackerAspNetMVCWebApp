@@ -12,6 +12,7 @@
     <Folder Include="ViewModels\" />
     <Folder Include="Views\Calendar\" />
     <Folder Include="Views\Habits\" />
+    <Folder Include="Views\Kanban\" />
     <Folder Include="wwwroot\assets\" />
   </ItemGroup>
 

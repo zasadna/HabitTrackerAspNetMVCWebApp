@@ -84,11 +84,22 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 var plannedHabits = habits
                     .Where(h => IsHabitPlannedForDate(h, date))
                     .Select(h => h.Title)
+                    .Distinct()
                     .ToList();
 
-                var completedHabits = habitLogs
+                var completedFromLogs = habitLogs
                     .Where(hl => hl.LogDate.Date == date.Date && hl.Habit != null)
-                    .Select(hl => hl.Habit!.Title)
+                    .Select(hl => hl.Habit!.Title);
+
+                var completedFromHabitStatus = habits
+                    .Where(h =>
+                        h.Status == HabitStatus.Completed &&
+                        h.EndDate.HasValue &&
+                        h.EndDate.Value.Date == date.Date)
+                    .Select(h => h.Title);
+
+                var completedHabits = completedFromLogs
+                    .Concat(completedFromHabitStatus)
                     .Distinct()
                     .ToList();
 
@@ -110,7 +121,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             if (habit.StartDate.Date > date.Date)
                 return false;
 
-            if (habit.EndDate.HasValue && date.Date > habit.EndDate.Value.Date)
+           if (habit.EndDate.HasValue && date.Date >= habit.EndDate.Value.Date && habit.Status == HabitStatus.Completed)
                 return false;
 
             switch (habit.Frequency)

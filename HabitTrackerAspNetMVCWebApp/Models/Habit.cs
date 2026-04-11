@@ -27,6 +27,10 @@ namespace HabitTrackerAspNetMVCWebApp.Models
         public HabitStatus Status { get; set; }
 
         [Required]
+        [Display(Name = "Kanban Status")]
+        public KanbanStatus KanbanStatus { get; set; } = KanbanStatus.Todo;
+
+        [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }

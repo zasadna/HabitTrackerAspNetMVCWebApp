@@ -1,0 +1,144 @@
+﻿@model HabitTrackerAspNetMVCWebApp.ViewModels.KanbanBoardViewModel
+
+@{
+    ViewData["Title"] = "Kanban Board";
+}
+
+<h1 class="mb-4">Kanban Board</h1>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">Todo</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.TodoHabits.Any())
+                {
+                    @foreach (var habit in Model.TodoHabits)
+                    {
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@habit.Title</h5>
+
+                                @if (!string.IsNullOrWhiteSpace(habit.Description))
+                                {
+                                    <p class="card-text">@habit.Description</p>
+                                }
+
+                                <p class="mb-1"><strong>Frequency:</strong> @habit.Frequency</p>
+                                <p class="mb-3"><strong>Status:</strong> @habit.Status</p>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <form action="@Url.Action("MoveToInProgress", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-primary">Move to In Progress</button>
+                                    </form>
+
+                                    <form action="@Url.Action("MoveToDone", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success">Move to Done</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No habits in Todo.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">In Progress</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.InProgressHabits.Any())
+                {
+                    @foreach (var habit in Model.InProgressHabits)
+                    {
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@habit.Title</h5>
+
+                                @if (!string.IsNullOrWhiteSpace(habit.Description))
+                                {
+                                    <p class="card-text">@habit.Description</p>
+                                }
+
+                                <p class="mb-1"><strong>Frequency:</strong> @habit.Frequency</p>
+                                <p class="mb-3"><strong>Status:</strong> @habit.Status</p>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <form action="@Url.Action("MoveToTodo", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-secondary">Move to Todo</button>
+                                    </form>
+
+                                    <form action="@Url.Action("MoveToDone", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success">Move to Done</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No habits in progress.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Done</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.DoneHabits.Any())
+                {
+                    @foreach (var habit in Model.DoneHabits)
+                    {
+                        <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@habit.Title</h5>
+
+                                @if (!string.IsNullOrWhiteSpace(habit.Description))
+                                {
+                                    <p class="card-text">@habit.Description</p>
+                                }
+
+                                <p class="mb-1"><strong>Frequency:</strong> @habit.Frequency</p>
+                                <p class="mb-3"><strong>Status:</strong> @habit.Status</p>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <form action="@Url.Action("MoveToTodo", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-secondary">Move to Todo</button>
+                                    </form>
+
+                                    <form action="@Url.Action("MoveToInProgress", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-primary">Move to In Progress</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No completed habits.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
