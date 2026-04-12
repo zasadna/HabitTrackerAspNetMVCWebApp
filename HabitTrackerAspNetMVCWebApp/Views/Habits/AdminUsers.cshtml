@@ -1,0 +1,51 @@
+﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.ViewModels.AdminUserListItemViewModel>
+
+@{
+    ViewData["Title"] = "Admin Users";
+}
+
+<h1>Admin Users</h1>
+
+<p class="text-muted">
+    Review users and open their habit lists.
+</p>
+
+<div class="mb-3">
+    <a href="@Url.Action("Index", "Habits", new { all = true })" class="btn btn-outline-primary">View All Habits</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No users found.
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Habit Count</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.HabitCount</td>
+                <td>
+                    <a href="@Url.Action("Index", "Habits", new { userId = user.UserId })" class="btn btn-sm btn-primary">
+                        View Habits
+                    </a>
+                    <a href="@Url.Action("Create", "Habits", new { userId = user.UserId })" class="btn btn-sm btn-success">
+                        Add Habit
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,9 @@
+namespace HabitTrackerAspNetMVCWebApp.ViewModels
+{
+    public class AdminUserListItemViewModel
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public int HabitCount { get; set; }
+    }
+}
