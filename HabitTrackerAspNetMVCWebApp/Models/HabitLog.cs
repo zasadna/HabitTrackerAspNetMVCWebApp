@@ -19,7 +19,8 @@ namespace HabitTrackerAspNetMVCWebApp.Models
         [Display(Name = "Log Date")]
         public DateTime LogDate { get; set; }
 
-        [Display(Name = "Completed")]
-        public bool IsCompleted { get; set; } = true;
+        [Required]
+        [Display(Name = "Status")]
+        public HabitLogStatus Status { get; set; } = HabitLogStatus.Completed;
     }
 }

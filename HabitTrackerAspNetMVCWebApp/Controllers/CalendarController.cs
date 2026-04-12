@@ -44,8 +44,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                     hl.Habit != null &&
                     hl.Habit.UserId == userId &&
                     hl.LogDate.Date >= firstDayOfMonth.Date &&
-                    hl.LogDate.Date <= lastDayOfMonth.Date &&
-                    hl.IsCompleted)
+                    hl.LogDate.Date <= lastDayOfMonth.Date)
                 .ToListAsync();
 
             var days = BuildCalendarDays(firstDayOfMonth, lastDayOfMonth, habits, habitLogs);
@@ -118,11 +117,20 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
         private bool IsHabitPlannedForDate(Habit habit, DateTime date)
         {
-            if (habit.StartDate.Date > date.Date)
+            if (date.Date < habit.StartDate.Date)
+            {
                 return false;
+            }
 
-           if (habit.EndDate.HasValue && date.Date >= habit.EndDate.Value.Date && habit.Status == HabitStatus.Completed)
+            if (habit.EndDate.HasValue && date.Date > habit.EndDate.Value.Date)
+            {
                 return false;
+            }
+
+            if (habit.Status == HabitStatus.Paused)
+            {
+                return false;
+            }
 
             switch (habit.Frequency)
             {
