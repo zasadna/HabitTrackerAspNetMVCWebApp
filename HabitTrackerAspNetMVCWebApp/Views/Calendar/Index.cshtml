@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Calendar";
+    var today = DateTime.Today;
+    var isCurrentDisplayedMonth = Model.Year == today.Year && Model.Month == today.Month;
 }
 
 @section PageStyles {
@@ -13,6 +15,15 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .calendar-toolbar-left,
+        .calendar-toolbar-center,
+        .calendar-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .calendar-grid {
@@ -102,7 +113,8 @@
             margin-top: 4px;
         }
 
-        .habit-actions form {
+        .habit-actions form,
+        .toolbar-action-form {
             margin: 0;
         }
 
@@ -121,22 +133,52 @@
             .calendar-day {
                 min-height: auto;
             }
+
+            .calendar-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .calendar-toolbar-left,
+            .calendar-toolbar-center,
+            .calendar-toolbar-right {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
         }
     </style>
 }
 
 <div class="calendar-toolbar">
-    <a href="@Url.Action("Index", "Calendar", new { year = Model.PrevYear, month = Model.PrevMonth })"
-       class="btn btn-outline-primary">
-        Previous
-    </a>
+    <div class="calendar-toolbar-left">
+        <a href="@Url.Action("Index", "Calendar", new { year = Model.PrevYear, month = Model.PrevMonth })"
+           class="btn btn-outline-primary">
+            Previous
+        </a>
+    </div>
 
-    <h2 class="mb-0">@Model.MonthName</h2>
+    <div class="calendar-toolbar-center">
+        <h2 class="mb-0">@Model.MonthName</h2>
+    </div>
 
-    <a href="@Url.Action("Index", "Calendar", new { year = Model.NextYear, month = Model.NextMonth })"
-       class="btn btn-outline-primary">
-        Next
-    </a>
+    <div class="calendar-toolbar-right">
+        @if (isCurrentDisplayedMonth)
+        {
+            <form action="@Url.Action("MarkAllForTodayCompleted", "Calendar")" method="post" class="toolbar-action-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="year" value="@Model.Year" />
+                <input type="hidden" name="month" value="@Model.Month" />
+                <button type="submit" class="btn btn-success">
+                    Mark all for today as completed
+                </button>
+            </form>
+        }
+
+        <a href="@Url.Action("Index", "Calendar", new { year = Model.NextYear, month = Model.NextMonth })"
+           class="btn btn-outline-primary">
+            Next
+        </a>
+    </div>
 </div>
 
 <div class="calendar-grid mb-2">

@@ -132,6 +132,59 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return RedirectToAction(nameof(Index), new { year, month });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAllForTodayCompleted(int year, int month)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var today = DateTime.Today;
+
+            var habits = await _context.Habits
+                .Where(h => h.UserId == userId)
+                .OrderBy(h => h.Title)
+                .ToListAsync();
+
+            var plannedHabitsForToday = habits
+                .Where(h => IsHabitPlannedForDate(h, today))
+                .ToList();
+
+            if (!plannedHabitsForToday.Any())
+            {
+                return RedirectToAction(nameof(Index), new { year, month });
+            }
+
+            var habitIds = plannedHabitsForToday
+                .Select(h => h.Id)
+                .ToList();
+
+            var existingLogs = await _context.HabitLogs
+                .Where(hl => habitIds.Contains(hl.HabitId) && hl.LogDate.Date == today)
+                .ToListAsync();
+
+            foreach (var habit in plannedHabitsForToday)
+            {
+                var existingLog = existingLogs.FirstOrDefault(hl => hl.HabitId == habit.Id);
+
+                if (existingLog == null)
+                {
+                    _context.HabitLogs.Add(new HabitLog
+                    {
+                        HabitId = habit.Id,
+                        LogDate = today,
+                        Status = HabitLogStatus.Completed
+                    });
+                }
+                else
+                {
+                    existingLog.Status = HabitLogStatus.Completed;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { year, month });
+        }
+
         private List<CalendarDayViewModel> BuildCalendarDays(
             DateTime firstDayOfMonth,
             DateTime lastDayOfMonth,
