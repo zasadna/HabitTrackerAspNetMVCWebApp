@@ -1,4 +1,5 @@
 ﻿@model HabitTrackerAspNetMVCWebApp.ViewModels.CalendarViewModel
+@using HabitTrackerAspNetMVCWebApp.Models
 
 @{
     ViewData["Title"] = "Calendar";
@@ -30,7 +31,7 @@
         }
 
         .calendar-day {
-            min-height: 180px;
+            min-height: 280px;
             border: 1px solid #dee2e6;
             border-radius: 12px;
             padding: 10px;
@@ -39,7 +40,7 @@
 
         .calendar-day.other-month {
             background-color: #f8f9fa;
-            opacity: 0.7;
+            opacity: 0.75;
         }
 
         .calendar-day.today {
@@ -54,47 +55,85 @@
         .section-title {
             font-size: 0.85rem;
             font-weight: 600;
-            margin-top: 8px;
-            margin-bottom: 4px;
+            margin-top: 10px;
+            margin-bottom: 6px;
         }
 
-        .habit-item {
+        .habit-card {
             font-size: 0.85rem;
-            margin-bottom: 4px;
-            padding: 4px 6px;
+            margin-bottom: 8px;
+            padding: 6px;
             border-radius: 8px;
             word-break: break-word;
+            border: 1px solid #e9ecef;
         }
 
         .planned-item {
             background-color: #fff7d6;
         }
 
+        .partial-item {
+            background-color: #fde68a;
+        }
+
         .completed-item {
             background-color: #dcfce7;
+        }
+
+        .skipped-item {
+            background-color: #fee2e2;
+        }
+
+        .habit-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .habit-status-note {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .habit-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .habit-actions form {
+            margin: 0;
+        }
+
+        .btn-xs {
+            font-size: 0.72rem;
+            line-height: 1.2;
+            padding: 3px 6px;
+            border-radius: 6px;
         }
 
         @@media (max-width: 992px) {
             .calendar-grid {
                 grid-template-columns: repeat(1, 1fr);
             }
+
+            .calendar-day {
+                min-height: auto;
+            }
         }
     </style>
 }
 
 <div class="calendar-toolbar">
-    <a asp-action="Index"
-       asp-route-year="@Model.PrevYear"
-       asp-route-month="@Model.PrevMonth"
+    <a href="@Url.Action("Index", "Calendar", new { year = Model.PrevYear, month = Model.PrevMonth })"
        class="btn btn-outline-primary">
         Previous
     </a>
 
     <h2 class="mb-0">@Model.MonthName</h2>
 
-    <a asp-action="Index"
-       asp-route-year="@Model.NextYear"
-       asp-route-month="@Model.NextMonth"
+    <a href="@Url.Action("Index", "Calendar", new { year = Model.NextYear, month = Model.NextMonth })"
        class="btn btn-outline-primary">
         Next
     </a>
@@ -133,7 +172,69 @@
             {
                 @foreach (var habit in day.PlannedHabits)
                 {
-                    <div class="habit-item planned-item">@habit</div>
+                    <div class="habit-card planned-item">
+                        <div class="habit-title">@habit.Title</div>
+
+                        @if (habit.CurrentStatus.HasValue)
+                        {
+                            <div class="habit-status-note">
+                                Current status:
+                                @switch (habit.CurrentStatus.Value)
+                                {
+                                    case HabitLogStatus.Completed:
+                                        @:Completed
+                                        break;
+                                    case HabitLogStatus.PartiallyCompleted:
+                                        @:Partial
+                                        break;
+                                    case HabitLogStatus.Skipped:
+                                        @:Skipped
+                                        break;
+                                }
+                            </div>
+                        }
+
+                        <div class="habit-actions">
+                            <form action="@Url.Action("SetHabitLog", "Calendar")" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="habitId" value="@habit.HabitId" />
+                                <input type="hidden" name="date" value="@day.Date.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="status" value="@HabitLogStatus.Completed" />
+                                <input type="hidden" name="year" value="@Model.Year" />
+                                <input type="hidden" name="month" value="@Model.Month" />
+                                <button type="submit" class="btn btn-success btn-xs">Complete</button>
+                            </form>
+
+                            <form action="@Url.Action("SetHabitLog", "Calendar")" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="habitId" value="@habit.HabitId" />
+                                <input type="hidden" name="date" value="@day.Date.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="status" value="@HabitLogStatus.PartiallyCompleted" />
+                                <input type="hidden" name="year" value="@Model.Year" />
+                                <input type="hidden" name="month" value="@Model.Month" />
+                                <button type="submit" class="btn btn-warning btn-xs">Partial</button>
+                            </form>
+
+                            <form action="@Url.Action("SetHabitLog", "Calendar")" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="habitId" value="@habit.HabitId" />
+                                <input type="hidden" name="date" value="@day.Date.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="status" value="@HabitLogStatus.Skipped" />
+                                <input type="hidden" name="year" value="@Model.Year" />
+                                <input type="hidden" name="month" value="@Model.Month" />
+                                <button type="submit" class="btn btn-danger btn-xs">Skip</button>
+                            </form>
+
+                            <form action="@Url.Action("ClearHabitLog", "Calendar")" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="habitId" value="@habit.HabitId" />
+                                <input type="hidden" name="date" value="@day.Date.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="year" value="@Model.Year" />
+                                <input type="hidden" name="month" value="@Model.Month" />
+                                <button type="submit" class="btn btn-outline-secondary btn-xs">Clear</button>
+                            </form>
+                        </div>
+                    </div>
                 }
             }
             else
@@ -141,17 +242,43 @@
                 <div class="text-muted small">No planned habits</div>
             }
 
+            <div class="section-title">Partial</div>
+            @if (day.PartialHabits.Any())
+            {
+                @foreach (var habit in day.PartialHabits)
+                {
+                    <div class="habit-card partial-item">@habit.Title</div>
+                }
+            }
+            else
+            {
+                <div class="text-muted small">No partially completed habits</div>
+            }
+
             <div class="section-title">Completed</div>
             @if (day.CompletedHabits.Any())
             {
                 @foreach (var habit in day.CompletedHabits)
                 {
-                    <div class="habit-item completed-item">@habit</div>
+                    <div class="habit-card completed-item">@habit.Title</div>
                 }
             }
             else
             {
                 <div class="text-muted small">No completed habits</div>
+            }
+
+            <div class="section-title">Skipped</div>
+            @if (day.SkippedHabits.Any())
+            {
+                @foreach (var habit in day.SkippedHabits)
+                {
+                    <div class="habit-card skipped-item">@habit.Title</div>
+                }
+            }
+            else
+            {
+                <div class="text-muted small">No skipped habits</div>
             }
         </div>
     }

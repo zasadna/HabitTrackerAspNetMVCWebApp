@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 
+using System;
+using System.Collections.Generic;
+
 namespace HabitTrackerAspNetMVCWebApp.ViewModels
 {
     public class CalendarDayViewModel
@@ -11,8 +14,12 @@ namespace HabitTrackerAspNetMVCWebApp.ViewModels
 
         public bool IsToday { get; set; }
 
-        public List<string> PlannedHabits { get; set; } = new List<string>();
+        public List<CalendarHabitItemViewModel> PlannedHabits { get; set; } = new();
 
-        public List<string> CompletedHabits { get; set; } = new List<string>();
+        public List<CalendarHabitItemViewModel> PartialHabits { get; set; } = new();
+
+        public List<CalendarHabitItemViewModel> CompletedHabits { get; set; } = new();
+
+        public List<CalendarHabitItemViewModel> SkippedHabits { get; set; } = new();
     }
 }

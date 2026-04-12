@@ -64,6 +64,74 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetHabitLog(int habitId, DateTime date, HabitLogStatus status, int year, int month)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
+
+            if (habit == null)
+            {
+                return NotFound();
+            }
+
+            var targetDate = date.Date;
+
+            var existingLog = await _context.HabitLogs
+                .FirstOrDefaultAsync(hl => hl.HabitId == habitId && hl.LogDate.Date == targetDate);
+
+            if (existingLog == null)
+            {
+                existingLog = new HabitLog
+                {
+                    HabitId = habitId,
+                    LogDate = targetDate,
+                    Status = status
+                };
+
+                _context.HabitLogs.Add(existingLog);
+            }
+            else
+            {
+                existingLog.Status = status;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { year, month });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClearHabitLog(int habitId, DateTime date, int year, int month)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
+
+            if (habit == null)
+            {
+                return NotFound();
+            }
+
+            var targetDate = date.Date;
+
+            var existingLog = await _context.HabitLogs
+                .FirstOrDefaultAsync(hl => hl.HabitId == habitId && hl.LogDate.Date == targetDate);
+
+            if (existingLog != null)
+            {
+                _context.HabitLogs.Remove(existingLog);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index), new { year, month });
+        }
+
         private List<CalendarDayViewModel> BuildCalendarDays(
             DateTime firstDayOfMonth,
             DateTime lastDayOfMonth,
@@ -80,26 +148,36 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
             for (var date = calendarStart; date <= calendarEnd; date = date.AddDays(1))
             {
-                var plannedHabits = habits
-                    .Where(h => IsHabitPlannedForDate(h, date))
-                    .Select(h => h.Title)
-                    .Distinct()
+                var logsForDate = habitLogs
+                    .Where(hl => hl.LogDate.Date == date.Date)
                     .ToList();
 
-                var completedFromLogs = habitLogs
-                    .Where(hl => hl.LogDate.Date == date.Date && hl.Habit != null)
-                    .Select(hl => hl.Habit!.Title);
+                var plannedHabits = habits
+                    .Where(h => IsHabitPlannedForDate(h, date))
+                    .Select(h =>
+                    {
+                        var log = logsForDate.FirstOrDefault(hl => hl.HabitId == h.Id);
 
-                var completedFromHabitStatus = habits
-                    .Where(h =>
-                        h.Status == HabitStatus.Completed &&
-                        h.EndDate.HasValue &&
-                        h.EndDate.Value.Date == date.Date)
-                    .Select(h => h.Title);
+                        return new CalendarHabitItemViewModel
+                        {
+                            HabitId = h.Id,
+                            Title = h.Title,
+                            CurrentStatus = log?.Status
+                        };
+                    })
+                    .OrderBy(h => h.Title)
+                    .ToList();
 
-                var completedHabits = completedFromLogs
-                    .Concat(completedFromHabitStatus)
-                    .Distinct()
+                var partialHabits = plannedHabits
+                    .Where(h => h.CurrentStatus == HabitLogStatus.PartiallyCompleted)
+                    .ToList();
+
+                var completedHabits = plannedHabits
+                    .Where(h => h.CurrentStatus == HabitLogStatus.Completed)
+                    .ToList();
+
+                var skippedHabits = plannedHabits
+                    .Where(h => h.CurrentStatus == HabitLogStatus.Skipped)
                     .ToList();
 
                 result.Add(new CalendarDayViewModel
@@ -108,7 +186,9 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                     IsCurrentMonth = date.Month == firstDayOfMonth.Month,
                     IsToday = date.Date == DateTime.Today,
                     PlannedHabits = plannedHabits,
-                    CompletedHabits = completedHabits
+                    PartialHabits = partialHabits,
+                    CompletedHabits = completedHabits,
+                    SkippedHabits = skippedHabits
                 });
             }
 
