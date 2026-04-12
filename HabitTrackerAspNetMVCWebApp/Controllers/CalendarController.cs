@@ -1,5 +1,6 @@
 using HabitTrackerAspNetMVCWebApp.Data;
 using HabitTrackerAspNetMVCWebApp.Models;
+using HabitTrackerAspNetMVCWebApp.Services;
 using HabitTrackerAspNetMVCWebApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,10 +17,12 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
     public class CalendarController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly HabitScheduleService _scheduleService;
 
         public CalendarController(ApplicationDbContext context)
         {
             _context = context;
+            _scheduleService = new HabitScheduleService();
         }
 
         public async Task<IActionResult> Index(int? year, int? month)
@@ -127,6 +130,19 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             {
                 _context.HabitLogs.Remove(existingLog);
                 await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index), new { year, month });
+            }
+
+            var isImplicitCompleted =
+                habit.Status == HabitStatus.Completed &&
+                habit.EndDate.HasValue &&
+                habit.EndDate.Value.Date == targetDate;
+
+            if (isImplicitCompleted)
+            {
+                habit.Status = HabitStatus.Active;
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction(nameof(Index), new { year, month });
@@ -145,7 +161,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 .ToListAsync();
 
             var plannedHabitsForToday = habits
-                .Where(h => IsHabitPlannedForDate(h, today))
+                .Where(h => _scheduleService.IsHabitPlannedForDate(h, today))
                 .ToList();
 
             if (!plannedHabitsForToday.Any())
@@ -153,9 +169,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 return RedirectToAction(nameof(Index), new { year, month });
             }
 
-            var habitIds = plannedHabitsForToday
-                .Select(h => h.Id)
-                .ToList();
+            var habitIds = plannedHabitsForToday.Select(h => h.Id).ToList();
 
             var existingLogs = await _context.HabitLogs
                 .Where(hl => habitIds.Contains(hl.HabitId) && hl.LogDate.Date == today)
@@ -206,7 +220,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                     .ToList();
 
                 var plannedHabits = habits
-                    .Where(h => IsHabitPlannedForDate(h, date))
+                    .Where(h => _scheduleService.IsHabitPlannedForDate(h, date))
                     .Select(h =>
                     {
                         var log = logsForDate.FirstOrDefault(hl => hl.HabitId == h.Id);
@@ -215,7 +229,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                         {
                             HabitId = h.Id,
                             Title = h.Title,
-                            CurrentStatus = log?.Status
+                            CurrentStatus = log?.Status ?? GetImplicitStatus(h, date)
                         };
                     })
                     .OrderBy(h => h.Title)
@@ -248,37 +262,16 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             return result;
         }
 
-        private bool IsHabitPlannedForDate(Habit habit, DateTime date)
+        private HabitLogStatus? GetImplicitStatus(Habit habit, DateTime date)
         {
-            if (date.Date < habit.StartDate.Date)
+            if (habit.Status == HabitStatus.Completed &&
+                habit.EndDate.HasValue &&
+                habit.EndDate.Value.Date == date.Date)
             {
-                return false;
+                return HabitLogStatus.Completed;
             }
 
-            if (habit.EndDate.HasValue && date.Date > habit.EndDate.Value.Date)
-            {
-                return false;
-            }
-
-            if (habit.Status == HabitStatus.Paused)
-            {
-                return false;
-            }
-
-            switch (habit.Frequency)
-            {
-                case Frequency.Daily:
-                    return true;
-
-                case Frequency.Weekly:
-                    return habit.StartDate.DayOfWeek == date.DayOfWeek;
-
-                case Frequency.Monthly:
-                    return habit.StartDate.Day == date.Day;
-
-                default:
-                    return false;
-            }
+            return null;
         }
     }
 }
