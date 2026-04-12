@@ -1,51 +1,72 @@
-﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.ViewModels.AdminUserListItemViewModel>
-
+@model IEnumerable<HabitTrackerAspNetMVCWebApp.ViewModels.AdminUserListItemViewModel>
 @{
     ViewData["Title"] = "Admin Users";
+    var users = Model.ToList();
+    var totalUsers = users.Count;
+    var totalHabits = users.Sum(u => u.HabitCount);
 }
 
-<h1>Admin Users</h1>
+<div class="page-intro">
+    <div>
+        <h1>Admin Users</h1>
+        <p class="mb-0">Review users and open their habit lists from one cleaner admin screen.</p>
+    </div>
+</div>
 
-<p class="text-muted">
-    Review users and open their habit lists.
-</p>
-
-<div class="mb-3">
+<div class="action-row">
     <a href="@Url.Action("Index", "Habits", new { all = true })" class="btn btn-outline-primary">View All Habits</a>
 </div>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        No users found.
+<div class="summary-grid mb-4">
+    <div class="stat-card">
+        <div class="stat-label">Total users</div>
+        <div class="stat-value">@totalUsers</div>
+        <div class="stat-hint">Accounts in the system</div>
     </div>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Habit Count</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.Email</td>
-                <td>@user.HabitCount</td>
-                <td>
-                    <a href="@Url.Action("Index", "Habits", new { userId = user.UserId })" class="btn btn-sm btn-primary">
-                        View Habits
-                    </a>
-                    <a href="@Url.Action("Create", "Habits", new { userId = user.UserId })" class="btn btn-sm btn-success">
-                        Add Habit
-                    </a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
+    <div class="stat-card">
+        <div class="stat-label">Total user habits</div>
+        <div class="stat-value">@totalHabits</div>
+        <div class="stat-hint">All habits across accounts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Average per user</div>
+        <div class="stat-value">@(totalUsers == 0 ? 0 : Math.Round((decimal)totalHabits / totalUsers, 1))</div>
+        <div class="stat-hint">Habits per account</div>
+    </div>
+</div>
+
+<section class="table-panel">
+    @if (!users.Any())
+    {
+        <div class="empty-state">No users found.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-clean align-middle">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Habit Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in users)
+                {
+                    <tr>
+                        <td class="main-cell">@user.Email</td>
+                        <td>@user.HabitCount</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="@Url.Action("Index", "Habits", new { userId = user.UserId })" class="btn btn-sm btn-outline-primary">View Habits</a>
+                                <a href="@Url.Action("Create", "Habits", new { userId = user.UserId })" class="btn btn-sm btn-primary">Add Habit</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

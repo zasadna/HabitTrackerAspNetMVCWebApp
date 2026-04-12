@@ -1,151 +1,136 @@
-﻿@model HabitTrackerAspNetMVCWebApp.ViewModels.KanbanBoardViewModel
-
+@model HabitTrackerAspNetMVCWebApp.ViewModels.KanbanBoardViewModel
 @{
     ViewData["Title"] = "Kanban Board";
 }
 
-<h1 class="mb-4">Kanban Board</h1>
-
-<p class="text-muted">
-    This board updates automatically from habit activity and schedule history.
-    Todo = no activity and no missed planned days.
-    In Progress = activity exists or there are missed planned days.
-    Done = habit is completed and has no missed planned days.
-</p>
-
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header bg-secondary text-white">
-                <h4 class="mb-0">Todo</h4>
-            </div>
-            <div class="card-body">
-                @if (Model.TodoHabits.Any())
-                {
-                    @foreach (var habit in Model.TodoHabits)
-                    {
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">@habit.Title</h5>
-
-                                @if (!string.IsNullOrWhiteSpace(habit.Description))
-                                {
-                                    <p class="card-text">@habit.Description</p>
-                                }
-
-                                <p class="mb-1"><strong>Frequency:</strong> @habit.Frequency</p>
-                                <p class="mb-1"><strong>Status:</strong> @habit.Status</p>
-                                <p class="mb-3"><strong>Start Date:</strong> @habit.StartDate.ToShortDateString()</p>
-
-                                <div class="d-flex flex-wrap gap-2">
-                                    <form action="@Url.Action("StartToday", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-primary">Start Today</button>
-                                    </form>
-
-                                    <form action="@Url.Action("CompleteHabit", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-success">Complete Habit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p class="text-muted mb-0">No habits in Todo.</p>
-                }
-            </div>
-        </div>
+<div class="page-intro">
+    <div>
+        <h1>Kanban Board</h1>
+        <p class="mb-0">Todo = no activity and no missed planned days. In Progress = activity exists or there are missed planned days. Done = habit is completed and has no missed planned days.</p>
     </div>
+</div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">In Progress</h4>
-            </div>
-            <div class="card-body">
-                @if (Model.InProgressHabits.Any())
-                {
-                    @foreach (var habit in Model.InProgressHabits)
-                    {
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">@habit.Title</h5>
-
-                                @if (!string.IsNullOrWhiteSpace(habit.Description))
-                                {
-                                    <p class="card-text">@habit.Description</p>
-                                }
-
-                                <p class="mb-1"><strong>Frequency:</strong> @habit.Frequency</p>
-                                <p class="mb-1"><strong>Status:</strong> @habit.Status</p>
-                                <p class="mb-1"><strong>Start Date:</strong> @habit.StartDate.ToShortDateString()</p>
-                                <p class="mb-3"><strong>Log Entries:</strong> @habit.HabitLogs.Count</p>
-
-                                <div class="d-flex flex-wrap gap-2">
-                                    <form action="@Url.Action("MarkTodayComplete", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-primary">Mark Today Complete</button>
-                                    </form>
-
-                                    <form action="@Url.Action("CompleteHabit", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-success">Complete Habit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p class="text-muted mb-0">No habits in progress.</p>
-                }
-            </div>
+<div class="kanban-board">
+    <section class="kanban-column">
+        <div class="kanban-column-header">
+            <h3 class="mb-0">Todo</h3>
+            <span class="badge-soft badge-soft-neutral">@Model.TodoHabits.Count</span>
         </div>
-    </div>
 
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Done</h4>
-            </div>
-            <div class="card-body">
-                @if (Model.DoneHabits.Any())
-                {
-                    @foreach (var habit in Model.DoneHabits)
+        @if (Model.TodoHabits.Any())
+        {
+            @foreach (var habit in Model.TodoHabits)
+            {
+                <article class="kanban-card">
+                    <h5 class="mb-2 text-wrap-break">@habit.Title</h5>
+                    @if (!string.IsNullOrWhiteSpace(habit.Description))
                     {
-                        <div class="card mb-3 border-0 shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">@habit.Title</h5>
-
-                                @if (!string.IsNullOrWhiteSpace(habit.Description))
-                                {
-                                    <p class="card-text">@habit.Description</p>
-                                }
-
-                                <p class="mb-1"><strong>Frequency:</strong> @habit.Frequency</p>
-                                <p class="mb-1"><strong>Status:</strong> @habit.Status</p>
-                                <p class="mb-1"><strong>Start Date:</strong> @habit.StartDate.ToShortDateString()</p>
-                                <p class="mb-3"><strong>Log Entries:</strong> @habit.HabitLogs.Count</p>
-
-                                <div class="d-flex flex-wrap gap-2">
-                                    <form action="@Url.Action("ReopenHabit", "Kanban", new { id = habit.Id })" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-secondary">Reopen Habit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="habit-subtext mb-2 text-wrap-break">@habit.Description</div>
                     }
-                }
-                else
-                {
-                    <p class="text-muted mb-0">No completed habits.</p>
-                }
-            </div>
+                    <div class="kanban-meta">
+                        <div><strong>Frequency:</strong> @habit.Frequency</div>
+                        <div><strong>Status:</strong> @habit.Status</div>
+                        <div><strong>Start Date:</strong> @habit.StartDate.ToShortDateString()</div>
+                    </div>
+                    <div class="kanban-actions">
+                        <form asp-action="StartToday" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-primary">Start Today</button>
+                        </form>
+                        <form asp-action="CompleteHabit" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-success">Complete</button>
+                        </form>
+                    </div>
+                </article>
+            }
+        }
+        else
+        {
+            <div class="empty-state">No habits in Todo.</div>
+        }
+    </section>
+
+    <section class="kanban-column">
+        <div class="kanban-column-header">
+            <h3 class="mb-0">In Progress</h3>
+            <span class="badge-soft badge-soft-primary">@Model.InProgressHabits.Count</span>
         </div>
-    </div>
+
+        @if (Model.InProgressHabits.Any())
+        {
+            @foreach (var habit in Model.InProgressHabits)
+            {
+                <article class="kanban-card">
+                    <h5 class="mb-2 text-wrap-break">@habit.Title</h5>
+                    @if (!string.IsNullOrWhiteSpace(habit.Description))
+                    {
+                        <div class="habit-subtext mb-2 text-wrap-break">@habit.Description</div>
+                    }
+                    <div class="kanban-meta">
+                        <div><strong>Frequency:</strong> @habit.Frequency</div>
+                        <div><strong>Status:</strong> @habit.Status</div>
+                        <div><strong>Start Date:</strong> @habit.StartDate.ToShortDateString()</div>
+                        <div><strong>Log Entries:</strong> @habit.HabitLogs.Count</div>
+                    </div>
+                    <div class="kanban-actions">
+                        <form asp-action="MarkTodayComplete" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-primary">Mark Today Complete</button>
+                        </form>
+                        <form asp-action="CompleteHabit" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-success">Complete Habit</button>
+                        </form>
+                    </div>
+                </article>
+            }
+        }
+        else
+        {
+            <div class="empty-state">No habits in progress.</div>
+        }
+    </section>
+
+    <section class="kanban-column">
+        <div class="kanban-column-header">
+            <h3 class="mb-0">Done</h3>
+            <span class="badge-soft badge-soft-success">@Model.DoneHabits.Count</span>
+        </div>
+
+        @if (Model.DoneHabits.Any())
+        {
+            @foreach (var habit in Model.DoneHabits)
+            {
+                <article class="kanban-card">
+                    <h5 class="mb-2 text-wrap-break">@habit.Title</h5>
+                    @if (!string.IsNullOrWhiteSpace(habit.Description))
+                    {
+                        <div class="habit-subtext mb-2 text-wrap-break">@habit.Description</div>
+                    }
+                    <div class="kanban-meta">
+                        <div><strong>Frequency:</strong> @habit.Frequency</div>
+                        <div><strong>Status:</strong> @habit.Status</div>
+                        <div><strong>Start Date:</strong> @habit.StartDate.ToShortDateString()</div>
+                        <div><strong>Log Entries:</strong> @habit.HabitLogs.Count</div>
+                    </div>
+                    <div class="kanban-actions">
+                        <form asp-action="ReopenHabit" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Reopen Habit</button>
+                        </form>
+                    </div>
+                </article>
+            }
+        }
+        else
+        {
+            <div class="empty-state">No completed habits.</div>
+        }
+    </section>
 </div>

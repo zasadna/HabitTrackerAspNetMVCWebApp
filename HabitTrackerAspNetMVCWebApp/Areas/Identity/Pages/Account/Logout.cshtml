@@ -1,5 +1,12 @@
-﻿@page
+@page
 @model HabitTrackerAspNetMVCWebApp.Areas.Identity.Pages.Account.LogoutModel
 @{
     ViewData["Title"] = "Log out";
 }
+
+<section class="auth-card">
+    <div class="text-soft mb-2">Account action</div>
+    <h2>Log out</h2>
+    <p class="auth-subtitle mb-4">Use the sidebar logout button to finish the sign-out flow and return to the dashboard.</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Back to Home</a>
+</section>

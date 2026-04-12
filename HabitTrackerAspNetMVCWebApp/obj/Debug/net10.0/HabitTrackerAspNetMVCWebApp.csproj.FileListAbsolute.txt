@@ -247,7 +247,6 @@ D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Deb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\fq8tdnquk6-{0}-wf4kd5o7r2-wf4kd5o7r2.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\93b6in2p84-{0}-1u4xnjh2ib-1u4xnjh2ib.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\862223zsrt-{0}-0t8u7xtqkq-0t8u7xtqkq.gz
-D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\d7uuek2r8g-{0}-m9v5qvaw4s-m9v5qvaw4s.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\2qo303j8kq-{0}-qyw40ro1pf-qyw40ro1pf.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\n24n8ht6cv-{0}-ak43mbpzvl-ak43mbpzvl.gz
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\nnlmjj43vr-{0}-lvmfy8bedq-lvmfy8bedq.gz
@@ -330,3 +329,5 @@ D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Deb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\HabitTrackerAspNetMVCWebApp.pdb
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\HabitTrackerAspNetMVCWebApp.genruntimeconfig.cache
 D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\ref\HabitTrackerAspNetMVCWebApp.dll
+D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\g6pekdxluq-{0}-0ct1441i6u-0ct1441i6u.gz
+D:\projects\2026\HabitTrackerAspNetMVCWebApp\HabitTrackerAspNetMVCWebApp\obj\Debug\net10.0\compressed\d7uuek2r8g-{0}-2b4yyzg9rz-2b4yyzg9rz.gz

@@ -1,80 +1,78 @@
-﻿@model HabitTrackerAspNetMVCWebApp.Models.Habit
-
+@model HabitTrackerAspNetMVCWebApp.Models.Habit
 @{
     ViewData["Title"] = "Edit Habit";
     bool isAdmin = User.IsInRole("Admin");
+    string selectedUserId = ViewBag.SelectedUserId as string ?? Model.UserId;
 }
 
-<h1>Edit Habit</h1>
-
-<hr />
-
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input asp-for="Id" type="hidden" />
-
-            @if (isAdmin)
-            {
-                <div class="form-group mb-3">
-                    <label for="ownerUserId" class="control-label">Owner User</label>
-                    <select id="ownerUserId" name="ownerUserId" class="form-control" asp-items="ViewBag.Users">
-                        <option value="">Select user</option>
-                    </select>
-                    @if (ViewData.ModelState["ownerUserId"]?.Errors.Any() == true)
-                    {
-                        <span class="text-danger">@ViewData.ModelState["ownerUserId"]!.Errors.First().ErrorMessage</span>
-                    }
-                </div>
-            }
-
-            <div class="form-group mb-3">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Frequency" class="control-label"></label>
-                <select asp-for="Frequency" class="form-control" asp-items="Html.GetEnumSelectList<HabitTrackerAspNetMVCWebApp.Models.Frequency>()"></select>
-                <span asp-validation-for="Frequency" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<HabitTrackerAspNetMVCWebApp.Models.HabitStatus>()"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" type="date" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" type="date" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
-            </div>
-        </form>
+<div class="page-intro">
+    <div>
+        <h1>Edit Habit</h1>
+        <p class="mb-0">Update the habit details without changing the current business logic.</p>
     </div>
 </div>
 
+<section class="panel" style="max-width: 760px;">
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <input asp-for="Id" type="hidden" />
+
+        @if (isAdmin)
+        {
+            <div class="mb-3">
+                <label for="ownerUserId" class="form-label">Owner User</label>
+                <select id="ownerUserId" name="ownerUserId" class="form-select" asp-items="ViewBag.Users">
+                    <option value="">Select user</option>
+                </select>
+                @if (ViewData.ModelState["ownerUserId"]?.Errors.Any() == true)
+                {
+                    <span class="text-danger">@ViewData.ModelState["ownerUserId"]!.Errors.First().ErrorMessage</span>
+                }
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="Frequency" class="form-label"></label>
+                <select asp-for="Frequency" class="form-select" asp-items="Html.GetEnumSelectList<HabitTrackerAspNetMVCWebApp.Models.Frequency>()"></select>
+                <span asp-validation-for="Frequency" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<HabitTrackerAspNetMVCWebApp.Models.HabitStatus>()"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="StartDate" class="form-label"></label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="EndDate" class="form-label"></label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-actions mt-4">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" asp-route-userId="@selectedUserId" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    </form>
+</section>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

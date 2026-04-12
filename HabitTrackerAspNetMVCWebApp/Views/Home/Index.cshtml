@@ -1,57 +1,130 @@
-﻿@model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
-
+@model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
+@using HabitTrackerAspNetMVCWebApp.Models
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
+    var habits = Model?.ToList() ?? new List<Habit>();
+    var totalHabits = habits.Count;
+    var activeHabits = habits.Count(h => h.Status == HabitStatus.Active);
+    var completedHabits = habits.Count(h => h.Status == HabitStatus.Completed);
 }
 
-<div class="text-center mb-4">
-    <h1 class="display-4">Habit Tracker</h1>
-    <p>Build better routines and track your progress.</p>
-</div>
-
-@if (User.Identity != null && User.Identity.IsAuthenticated)
+@if (User.Identity?.IsAuthenticated == true)
 {
-    <div class="mb-4">
-        <a asp-controller="Habits" asp-action="Index" class="btn btn-primary">Go to My Habits</a>
-        <a asp-controller="Habits" asp-action="Create" class="btn btn-success">Create Habit</a>
+    <div class="dashboard-grid">
+        <section class="page-hero">
+            <div class="text-soft mb-2">Habit tracker dashboard</div>
+            <h1>Build better routines with a cleaner workspace.</h1>
+            <p class="mb-0">
+                Keep your habits, calendar, and kanban flow in one place with a simpler layout and clearer overview.
+            </p>
+
+            <div class="action-row">
+                <a asp-controller="Habits" asp-action="Index" class="btn btn-primary">Open My Habits</a>
+                <a asp-controller="Habits" asp-action="Create" class="btn btn-outline-primary">Create Habit</a>
+                <a asp-controller="Calendar" asp-action="Index" class="btn btn-outline-secondary">Open Calendar</a>
+            </div>
+
+            <div class="summary-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total habits</div>
+                    <div class="stat-value">@totalHabits</div>
+                    <div class="stat-hint">All habits in your workspace</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active habits</div>
+                    <div class="stat-value">@activeHabits</div>
+                    <div class="stat-hint">Routines still in progress</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Completed habits</div>
+                    <div class="stat-value">@completedHabits</div>
+                    <div class="stat-hint">Finished routines</div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="panel">
+            <h3 class="mb-3">Quick summary</h3>
+            <ul class="panel-list">
+                <li>Personal habits only for regular users</li>
+                <li>Monthly calendar tracking for the current user</li>
+                <li>Kanban status based on real activity history</li>
+                <li>Admin tools for user overview and habit assignment</li>
+            </ul>
+            <hr />
+            <div class="stat-label">Current user</div>
+            <div class="fw-bold">@User.Identity?.Name</div>
+        </aside>
     </div>
 
-    @if (Model != null && Model.Any())
-    {
-        <h2 class="mb-3">Recent Habits</h2>
+    <section class="table-panel mt-4">
+        <div class="table-panel-header">
+            <div>
+                <h3 class="mb-1">Recent habits</h3>
+                <div class="panel-note">A compact overview of your latest habits.</div>
+            </div>
+        </div>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Frequency</th>
-                    <th>Start Date</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var habit in Model)
-            {
-                <tr>
-                    <td>@habit.Title</td>
-                    <td>@habit.Status</td>
-                    <td>@habit.Frequency</td>
-                    <td>@habit.StartDate.ToShortDateString()</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>You do not have any habits yet.</p>
-    }
+        @if (habits.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-clean">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Frequency</th>
+                            <th>Start Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var habit in habits.OrderByDescending(h => h.StartDate).Take(6))
+                    {
+                        <tr>
+                            <td class="main-cell">@habit.Title</td>
+                            <td>
+                                <span class="badge-soft @(habit.Status == HabitStatus.Completed ? "badge-soft-success" : "badge-soft-primary")">
+                                    @habit.Status
+                                </span>
+                            </td>
+                            <td>@habit.Frequency</td>
+                            <td>@habit.StartDate.ToShortDateString()</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">You do not have any habits yet.</div>
+        }
+    </section>
 }
 else
 {
-    <div class="text-center">
-        <p>Please register or log in to manage your habits.</p>
-        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Login</a>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Register</a>
+    <div class="dashboard-grid">
+        <section class="page-hero">
+            <div class="text-soft mb-2">Welcome</div>
+            <h1>Track routines in one clean dashboard.</h1>
+            <p class="mb-0">
+                Create habits, review progress in calendar view, and manage execution stages in the kanban board.
+            </p>
+
+            <div class="action-row">
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Login</a>
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Register</a>
+            </div>
+        </section>
+
+        <aside class="panel">
+            <h3 class="mb-3">Available after login</h3>
+            <ul class="panel-list mb-0">
+                <li>Personal habit list</li>
+                <li>Monthly calendar</li>
+                <li>Kanban board by progress stage</li>
+                <li>Role-based access inside the project</li>
+            </ul>
+        </aside>
     </div>
 }

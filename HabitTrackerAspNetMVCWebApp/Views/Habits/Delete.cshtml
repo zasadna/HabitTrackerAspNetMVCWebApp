@@ -1,20 +1,41 @@
-﻿@model HabitTrackerAspNetMVCWebApp.Models.Habit
-
+@model HabitTrackerAspNetMVCWebApp.Models.Habit
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Habit";
 }
 
-<h1>Delete Habit</h1>
-
-<h3>Are you sure you want to delete this?</h3>
-
-<div>
-    <strong>@Model.Title</strong>
-    <p>@Model.Description</p>
+<div class="page-intro">
+    <div>
+        <h1>Delete Habit</h1>
+        <p class="mb-0">Confirm deletion before removing the habit.</p>
+    </div>
 </div>
 
-<form asp-action="Delete">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+<section class="panel" style="max-width: 760px;">
+    <div class="alert-soft-danger mb-4">
+        <div class="fw-bold mb-1">Are you sure you want to delete this habit?</div>
+        <div>This action will remove the habit from the current list.</div>
+    </div>
+
+    <div class="detail-grid mb-4">
+        <div class="detail-card">
+            <div class="detail-label">Title</div>
+            <div class="detail-value">@Model.Title</div>
+        </div>
+        <div class="detail-card">
+            <div class="detail-label">Frequency</div>
+            <div class="detail-value">@Model.Frequency</div>
+        </div>
+        <div class="detail-card" style="grid-column: 1 / -1;">
+            <div class="detail-label">Description</div>
+            <div class="detail-value">@(string.IsNullOrWhiteSpace(Model.Description) ? "No description" : Model.Description)</div>
+        </div>
+    </div>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a asp-action="Index" asp-route-userId="@Model.UserId" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</section>

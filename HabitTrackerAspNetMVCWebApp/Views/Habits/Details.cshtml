@@ -1,31 +1,44 @@
-﻿@model HabitTrackerAspNetMVCWebApp.Models.Habit
-
+@model HabitTrackerAspNetMVCWebApp.Models.Habit
+@using HabitTrackerAspNetMVCWebApp.Models
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Habit Details";
 }
 
-<h1>Habit Details</h1>
-
-<div>
-    <h4>@Model.Title</h4>
-    <hr />
-    <dl class="row">
-        <dt>Description</dt>
-        <dd>@Model.Description</dd>
-
-        <dt>Frequency</dt>
-        <dd>@Model.Frequency</dd>
-
-        <dt>Status</dt>
-        <dd>@Model.Status</dd>
-
-        <dt>Start Date</dt>
-        <dd>@Model.StartDate.ToShortDateString()</dd>
-
-        <dt>End Date</dt>
-        <dd>@(Model.EndDate?.ToShortDateString() ?? "-")</dd>
-    </dl>
+<div class="page-intro">
+    <div>
+        <h1>Habit Details</h1>
+        <p class="mb-0">A cleaner details view for one selected habit.</p>
+    </div>
 </div>
 
-<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-<a asp-action="Index">Back</a>
+<section class="panel">
+    <div class="detail-grid">
+        <div class="detail-card">
+            <div class="detail-label">Title</div>
+            <div class="detail-value">@Model.Title</div>
+        </div>
+        <div class="detail-card">
+            <div class="detail-label">Status</div>
+            <div class="detail-value">
+                <span class="badge-soft @(Model.Status == HabitStatus.Completed ? "badge-soft-success" : "badge-soft-primary")">@Model.Status</span>
+            </div>
+        </div>
+        <div class="detail-card">
+            <div class="detail-label">Frequency</div>
+            <div class="detail-value">@Model.Frequency</div>
+        </div>
+        <div class="detail-card">
+            <div class="detail-label">Date range</div>
+            <div class="detail-value">@Model.StartDate.ToShortDateString() - @(Model.EndDate?.ToShortDateString() ?? "-")</div>
+        </div>
+        <div class="detail-card" style="grid-column: 1 / -1;">
+            <div class="detail-label">Description</div>
+            <div class="detail-value">@(string.IsNullOrWhiteSpace(Model.Description) ? "No description" : Model.Description)</div>
+        </div>
+    </div>
+
+    <div class="form-actions mt-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" asp-route-userId="@Model.UserId" class="btn btn-outline-secondary">Back</a>
+    </div>
+</section>
