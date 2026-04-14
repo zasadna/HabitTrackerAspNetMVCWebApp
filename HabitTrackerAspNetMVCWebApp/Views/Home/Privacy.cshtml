@@ -2,27 +2,99 @@
     ViewData["Title"] = "Privacy";
 }
 
-<div class="info-grid">
-    <section class="page-hero">
-        <div class="text-soft mb-2">Project information</div>
-        <h1>Privacy policy</h1>
-        <p>
-            This Habit Tracker stores user accounts, personal habits, and habit log entries that are required to provide dashboard,
-            calendar, and kanban functionality.
-        </p>
+<div class="page-intro">
+    <div>
+        <h1>Privacy</h1>
         <p class="mb-0">
-            For a student project, keep this page simple and honest: explain what data is stored, why it is used, and that users can only
-            access their own data unless they are admins.
+            Clear information about what data is stored in the HabitTracker application and how access is controlled.
         </p>
-    </section>
+    </div>
+</div>
 
-    <aside class="panel">
-        <h3 class="mb-3">Suggested points</h3>
-        <ul class="panel-list mb-0">
-            <li>User account information</li>
-            <li>Habit titles and descriptions</li>
-            <li>Habit completion history</li>
-            <li>Role-based access control</li>
-        </ul>
-    </aside>
+<div class="summary-grid mt-4">
+    <div class="stat-card">
+        <div class="stat-label">User accounts</div>
+        <div class="stat-value">🔐</div>
+        <div class="stat-hint">Authentication is handled with ASP.NET Identity.</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Personal habits</div>
+        <div class="stat-value">📝</div>
+        <div class="stat-hint">Each user manages only their own habit records.</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Progress tracking</div>
+        <div class="stat-value">📅</div>
+        <div class="stat-hint">Calendar and kanban views use habit status and history.</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Role-based access</div>
+        <div class="stat-value">🛡️</div>
+        <div class="stat-hint">Admin and User permissions are separated in the application.</div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <section class="panel h-100">
+            <div class="text-soft mb-2">Project information</div>
+            <h2 class="mb-3">Privacy policy</h2>
+
+            <p>
+                HabitTracker stores account and habit-related information required to provide the main functionality of the application.
+                This includes authentication data, personal habits, habit statuses, and activity records used in dashboard, calendar,
+                and kanban views.
+            </p>
+
+            <p class="mb-0">
+                The project follows a simple privacy approach for a student portfolio application: users should only see and manage
+                their own data, while administrators have broader access for system management and user administration.
+            </p>
+        </section>
+    </div>
+
+    <div class="col-lg-5">
+        <section class="panel h-100">
+            <h3 class="mb-3">What data may be stored</h3>
+            <ul class="mb-0">
+                <li>User account information such as email and login credentials</li>
+                <li>Habit titles, descriptions, dates, and frequency settings</li>
+                <li>Habit progress and completion status</li>
+                <li>Habit activity history used for calendar and kanban presentation</li>
+                <li>User role information for authorization rules</li>
+            </ul>
+        </section>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-6">
+        <section class="panel h-100">
+            <h3 class="mb-3">Access rules</h3>
+            <ul class="mb-0">
+                <li>Guests can only access public pages.</li>
+                <li>Regular users can access only their own habits, calendar data, and kanban board.</li>
+                <li>Administrators can manage users and review system data according to role permissions.</li>
+                <li>Inactive users remain in the database but cannot sign in.</li>
+            </ul>
+        </section>
+    </div>
+
+    <div class="col-lg-6">
+        <section class="panel h-100">
+            <h3 class="mb-3">Project note</h3>
+            <p>
+                This page is part of an educational ASP.NET MVC project built to demonstrate authentication, authorization,
+                database relationships, and user-specific data access in a clean web interface.
+            </p>
+
+            <p class="mb-0">
+                In a production system, privacy details would usually also include retention policies, consent handling,
+                export or deletion requests, and more detailed legal notices.
+            </p>
+        </section>
+    </div>
 </div>
