@@ -32,19 +32,17 @@
                 </a>
 
                 <nav class="sidebar-nav">
-                    <a asp-controller="Home" asp-action="Index" class="@NavClass("Home", "Index")">Home</a>
+                <a asp-controller="Home" asp-action="Index" class="@NavClass("Home", "Index")">Home</a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
                     <a asp-controller="Habits" asp-action="Index" class="@NavClass("Habits")">Habits</a>
                     <a asp-controller="Calendar" asp-action="Index" class="@NavClass("Calendar")">Calendar</a>
                     <a asp-controller="Kanban" asp-action="Index" class="@NavClass("Kanban")">Kanban</a>
-                    <a asp-controller="Home" asp-action="Privacy" class="@NavClass("Home", "Privacy")">Privacy</a>
-                </nav>
+                }
 
-                @if (User.IsInRole("Admin"))
-                {
-                    <div class="sidebar-section-title">Admin</div>
-                    <nav class="sidebar-nav">
-                        <a asp-controller="AdminUsers" asp-action="Index" class="@NavClass("AdminUsers")">Users</a>
-                    </nav>
+                <a asp-controller="Home" asp-action="Privacy" class="@NavClass("Home", "Privacy")">Privacy</a>
+            </nav>
                 }
             </div>
 
