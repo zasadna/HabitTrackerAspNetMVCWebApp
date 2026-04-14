@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using HabitTrackerAspNetMVCWebApp.Data;
 using HabitTrackerAspNetMVCWebApp.Models;
 using HabitTrackerAspNetMVCWebApp.ViewModels;
@@ -15,10 +13,12 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
     public class HabitsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IServiceProvider _serviceProvider;
 
-        public HabitsController(ApplicationDbContext context)
+        public HabitsController(ApplicationDbContext context, IServiceProvider serviceProvider)
         {
             _context = context;
+            _serviceProvider = serviceProvider;
         }
 
         private string GetCurrentUserId()
@@ -50,6 +50,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
         private async Task PopulateUsersDropDownAsync(string? selectedUserId = null)
         {
             var users = await _context.Users
+                .Where(u => u.IsActive)
                 .OrderBy(u => u.Email)
                 .Select(u => new
                 {
@@ -125,7 +126,8 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 {
                     UserId = u.Id,
                     Email = u.Email ?? u.UserName ?? u.Id,
-                    HabitCount = habitCounts.TryGetValue(u.Id, out var count) ? count : 0
+                    HabitCount = habitCounts.TryGetValue(u.Id, out var count) ? count : 0,
+                    IsActive = u.IsActive
                 })
                 .ToList();
 
@@ -163,7 +165,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Frequency,Status,StartDate,EndDate")] Habit habit, string? ownerUserId)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Frequency,Status,KanbanStatus,StartDate,EndDate")] Habit habit, string? ownerUserId)
         {
             var isAdmin = IsAdmin();
             var currentUserId = GetCurrentUserId();
@@ -176,7 +178,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 }
                 else
                 {
-                    var userExists = await _context.Users.AnyAsync(u => u.Id == ownerUserId);
+                    var userExists = await _context.Users.AnyAsync(u => u.Id == ownerUserId && u.IsActive);
                     if (!userExists)
                     {
                         ModelState.AddModelError("ownerUserId", "Selected user was not found.");
@@ -233,7 +235,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Frequency,Status,StartDate,EndDate")] Habit habit, string? ownerUserId)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Frequency,Status,KanbanStatus,StartDate,EndDate")] Habit habit, string? ownerUserId)
         {
             if (id != habit.Id)
             {
@@ -257,7 +259,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 }
                 else
                 {
-                    var userExists = await _context.Users.AnyAsync(u => u.Id == ownerUserId);
+                    var userExists = await _context.Users.AnyAsync(u => u.Id == ownerUserId && u.IsActive);
                     if (!userExists)
                     {
                         ModelState.AddModelError("ownerUserId", "Selected user was not found.");
@@ -280,6 +282,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             existingHabit.Description = habit.Description;
             existingHabit.Frequency = habit.Frequency;
             existingHabit.Status = habit.Status;
+            existingHabit.KanbanStatus = habit.KanbanStatus;
             existingHabit.StartDate = habit.StartDate;
             existingHabit.EndDate = habit.EndDate;
 
@@ -363,7 +366,18 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             _context.Habits.RemoveRange(orphanHabits);
             await _context.SaveChangesAsync();
 
-            return Content($"Removed {count} orphan habits");
+            TempData["SuccessMessage"] = $"Removed {count} orphan habits.";
+            return RedirectToAction(nameof(Index), new { all = true });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SeedDemoData()
+        {
+            await DemoDataSeeder.SeedAsync(_serviceProvider);
+            TempData["SuccessMessage"] = "Demo data seeded successfully.";
+            return RedirectToAction(nameof(Index), new { all = true });
         }
     }
 }

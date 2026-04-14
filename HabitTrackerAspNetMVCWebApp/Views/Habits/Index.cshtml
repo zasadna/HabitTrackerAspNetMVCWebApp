@@ -1,5 +1,6 @@
 @model IEnumerable<HabitTrackerAspNetMVCWebApp.Models.Habit>
 @using HabitTrackerAspNetMVCWebApp.Models
+
 @{
     ViewData["Title"] = ViewBag.PageTitle ?? "Habits";
     bool isAdmin = ViewBag.IsAdmin ?? false;
@@ -18,12 +19,23 @@
     </div>
 </div>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mb-4">@TempData["SuccessMessage"]</div>
+}
+
 <div class="action-row">
     @if (isAdmin)
     {
         <a href="@Url.Action("Index", "AdminUsers")" class="btn btn-outline-dark">Admin Users</a>
         <a href="@Url.Action("Index", "Habits", new { all = true })" class="btn btn-outline-primary">All Habits</a>
         <a href="@Url.Action("Create", "Habits", new { userId = selectedUserId })" class="btn btn-primary">Create Habit</a>
+
+        <form asp-action="SeedDemoData" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-success">Seed Demo Data</button>
+        </form>
+
         <a href="@Url.Action("CleanupOrphans", "Habits")" class="btn btn-outline-danger">Cleanup Orphans</a>
     }
     else
@@ -79,6 +91,7 @@
                         <th>Title</th>
                         <th>Frequency</th>
                         <th>Status</th>
+                        <th>Kanban</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Actions</th>
@@ -101,10 +114,11 @@
                         </td>
                         <td>@habit.Frequency</td>
                         <td>
-                            <span class="badge-soft @(habit.Status == HabitStatus.Completed ? "badge-soft-success" : "badge-soft-primary")">
+                            <span class="badge-soft @(habit.Status == HabitStatus.Completed ? "badge-soft-success" : habit.Status == HabitStatus.Paused ? "badge-soft-warning" : "badge-soft-primary")">
                                 @habit.Status
                             </span>
                         </td>
+                        <td>@habit.KanbanStatus</td>
                         <td>@habit.StartDate.ToShortDateString()</td>
                         <td>@(habit.EndDate?.ToShortDateString() ?? "-")</td>
                         <td>
