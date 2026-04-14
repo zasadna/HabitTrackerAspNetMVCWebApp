@@ -1,0 +1,48 @@
+﻿@model HabitTrackerAspNetMVCWebApp.ViewModels.AdminUserListItemViewModel
+@{
+    ViewData["Title"] = "Deactivate User";
+}
+
+<div class="page-intro">
+    <div>
+        <h1>Deactivate User</h1>
+        <p class="mb-0">Disable sign-in access without deleting the account or breaking related habit data.</p>
+    </div>
+</div>
+
+<section class="panel" style="max-width: 760px;">
+    <div class="mb-4">
+        <h4 class="mb-3">Are you sure you want to deactivate this user?</h4>
+
+        <div class="info-grid">
+            <div class="stat-card">
+                <div class="stat-label">Email</div>
+                <div class="stat-value" style="font-size: 1.1rem;">@Model.Email</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Role</div>
+                <div class="stat-value" style="font-size: 1.1rem;">@Model.RoleName</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Current Status</div>
+                <div class="stat-value" style="font-size: 1.1rem;">@(Model.IsActive ? "Active" : "Inactive")</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Habit Count</div>
+                <div class="stat-value" style="font-size: 1.1rem;">@Model.HabitCount</div>
+            </div>
+        </div>
+
+        <p class="panel-note mt-4 mb-0">
+            The user will stay in the database, related habits will remain intact, and the account can be reactivated later.
+        </p>
+    </div>
+
+    <form asp-action="Deactivate" method="post">
+        <input type="hidden" name="id" value="@Model.UserId" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-outline-danger">Deactivate</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</section>

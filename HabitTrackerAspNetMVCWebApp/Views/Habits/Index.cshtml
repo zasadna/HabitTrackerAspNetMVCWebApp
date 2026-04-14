@@ -21,7 +21,7 @@
 <div class="action-row">
     @if (isAdmin)
     {
-        <a href="@Url.Action("AdminUsers", "Habits")" class="btn btn-outline-dark">Admin Users</a>
+        <a href="@Url.Action("Index", "AdminUsers")" class="btn btn-outline-dark">Admin Users</a>
         <a href="@Url.Action("Index", "Habits", new { all = true })" class="btn btn-outline-primary">All Habits</a>
         <a href="@Url.Action("Create", "Habits", new { userId = selectedUserId })" class="btn btn-primary">Create Habit</a>
         <a href="@Url.Action("CleanupOrphans", "Habits")" class="btn btn-outline-danger">Cleanup Orphans</a>

@@ -13,11 +13,16 @@ namespace HabitTrackerAspNetMVCWebApp.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _userManager = userManager;
             _logger = logger;
         }
 
@@ -59,6 +64,14 @@ namespace HabitTrackerAspNetMVCWebApp.Areas.Identity.Pages.Account
 
             if (!ModelState.IsValid)
             {
+                return Page();
+            }
+
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+
+            if (user != null && !user.IsActive)
+            {
+                ModelState.AddModelError(string.Empty, "This account is inactive. Please contact the administrator.");
                 return Page();
             }
 
