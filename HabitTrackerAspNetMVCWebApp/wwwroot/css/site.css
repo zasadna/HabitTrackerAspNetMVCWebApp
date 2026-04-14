@@ -562,6 +562,72 @@ textarea.form-control {
   margin-top: 0.35rem;
 }
 
+.calendar-action-form {
+  margin: 0;
+}
+
+.calendar-badge-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  padding: 0;
+  margin: 0;
+  border: 0 !important;
+  outline: none;
+  border-radius: 0.375rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-image: none;
+  box-shadow: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calendar-badge-btn:focus,
+.calendar-badge-btn:active,
+.calendar-badge-btn:hover {
+  border: 0 !important;
+  outline: none;
+  text-decoration: none;
+}
+
+.calendar-badge-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+  box-shadow: 0 0.125rem 0.5rem rgba(115, 103, 240, 0.12);
+}
+
+.calendar-badge-btn i {
+  font-size: 0.82rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.calendar-badge-success {
+  background-color: rgba(40, 199, 111, 0.16);
+  color: #28c76f;
+}
+
+.calendar-badge-warning {
+  background-color: rgba(255, 159, 67, 0.16);
+  color: #ff9f43;
+}
+
+.calendar-badge-danger {
+  background-color: rgba(234, 84, 85, 0.16);
+  color: #ea5455;
+}
+
+.calendar-badge-secondary {
+  background-color: rgba(168, 170, 174, 0.16);
+  color: #6f6b7d;
+}
+
 .btn-xs {
   padding: 0.26rem 0.58rem;
   border-radius: 10px;
@@ -843,6 +909,4 @@ textarea.form-control {
   .auth-body .btn {
     width: 100%;
   }
-
-  
 }
