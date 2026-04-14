@@ -106,9 +106,28 @@
             {
                 <div class="calendar-item calendar-item-planned">
                     <div class="calendar-item-title">@habit.Title</div>
-                    @if (habit.CurrentStatus.HasValue)
+                  @if (habit.CurrentStatus.HasValue)
                     {
-                        <div class="habit-subtext mb-1">Current status: @habit.CurrentStatus</div>
+                        <div class="mt-1">
+                            @if (habit.CurrentStatus.ToString() == "Completed")
+                            {
+                                <span class="calendar-status-badge calendar-status-success">Completed</span>
+                            }
+                            else if (habit.CurrentStatus.ToString() == "PartiallyCompleted")
+                            {
+                                <span class="calendar-status-badge calendar-status-warning">Partial</span>
+                            }
+                            else if (habit.CurrentStatus.ToString() == "Skipped")
+                            {
+                                <span class="calendar-status-badge calendar-status-danger">Skipped</span>
+                            }
+                            else
+                            {
+                                <span class="calendar-status-badge calendar-status-neutral">
+                                    @habit.CurrentStatus
+                                </span>
+                            }
+                        </div>
                     }
                   <div class="calendar-actions">
                         <form action="@Url.Action("SetHabitLog", "Calendar")" method="post" class="calendar-action-form">

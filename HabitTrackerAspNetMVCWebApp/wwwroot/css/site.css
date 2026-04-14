@@ -909,4 +909,33 @@ textarea.form-control {
   .auth-body .btn {
     width: 100%;
   }
+
+  .calendar-status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+  }
+
+  .calendar-status-success {
+    background: rgba(40, 199, 111, 0.16);
+    color: #28c76f;
+  }
+
+  .calendar-status-warning {
+    background: rgba(255, 159, 67, 0.16);
+    color: #ff9f43;
+  }
+
+  .calendar-status-danger {
+    background: rgba(234, 84, 85, 0.16);
+    color: #ea5455;
+  }
+
+  .calendar-status-neutral {
+    background: rgba(168, 170, 174, 0.16);
+    color: #6f6b7d;
+  }
 }
