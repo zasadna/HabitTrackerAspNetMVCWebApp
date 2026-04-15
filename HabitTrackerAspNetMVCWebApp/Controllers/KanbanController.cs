@@ -41,42 +41,23 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 .OrderBy(h => h.Title)
                 .ToListAsync();
 
-            var viewModel = new KanbanBoardViewModel();
-
-            foreach (var habit in habits)
+            var viewModel = new KanbanBoardViewModel
             {
-                var hasLogs = habit.HabitLogs.Any();
-                var hasImplicitCompletion = HasImplicitCompletion(habit);
-                var hasAnyTrackedActivity = hasLogs || hasImplicitCompletion;
-                var hasMissedOccurrences = HasMissedOccurrences(habit);
+                TodoHabits = habits
+                    .Where(h => h.KanbanStatus == KanbanStatus.Todo)
+                    .OrderBy(h => h.Title)
+                    .ToList(),
 
-                if (habit.Status == HabitStatus.Completed)
-                {
-                    if (hasMissedOccurrences)
-                    {
-                        viewModel.InProgressHabits.Add(habit);
-                    }
-                    else
-                    {
-                        viewModel.DoneHabits.Add(habit);
-                    }
-                }
-                else
-                {
-                    if (!hasAnyTrackedActivity && !hasMissedOccurrences)
-                    {
-                        viewModel.TodoHabits.Add(habit);
-                    }
-                    else
-                    {
-                        viewModel.InProgressHabits.Add(habit);
-                    }
-                }
-            }
+                InProgressHabits = habits
+                    .Where(h => h.KanbanStatus == KanbanStatus.InProgress)
+                    .OrderBy(h => h.Title)
+                    .ToList(),
 
-            viewModel.TodoHabits = viewModel.TodoHabits.OrderBy(h => h.Title).ToList();
-            viewModel.InProgressHabits = viewModel.InProgressHabits.OrderBy(h => h.Title).ToList();
-            viewModel.DoneHabits = viewModel.DoneHabits.OrderBy(h => h.Title).ToList();
+                DoneHabits = habits
+                    .Where(h => h.KanbanStatus == KanbanStatus.Done)
+                    .OrderBy(h => h.Title)
+                    .ToList()
+            };
 
             return View(viewModel);
         }
@@ -93,7 +74,6 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             }
 
             var habit = await _context.Habits
-                .Include(h => h.HabitLogs)
                 .FirstOrDefaultAsync(h => h.Id == id && h.UserId == currentUser.Id);
 
             if (habit == null)
@@ -125,11 +105,12 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 existingLog.Status = HabitLogStatus.PartiallyCompleted;
             }
 
-            if (habit.Status == HabitStatus.Completed)
+            if (habit.Status != HabitStatus.Completed)
             {
-                habit.Status = HabitStatus.Active;
                 habit.EndDate = null;
             }
+
+            habit.KanbanStatus = KanbanStatus.InProgress;
 
             await _context.SaveChangesAsync();
 
@@ -148,7 +129,6 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             }
 
             var habit = await _context.Habits
-                .Include(h => h.HabitLogs)
                 .FirstOrDefaultAsync(h => h.Id == id && h.UserId == currentUser.Id);
 
             if (habit == null)
@@ -180,11 +160,53 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 existingLog.Status = HabitLogStatus.Completed;
             }
 
-            if (habit.Status == HabitStatus.Completed)
+            if (habit.Status != HabitStatus.Completed)
             {
-                habit.Status = HabitStatus.Active;
                 habit.EndDate = null;
             }
+
+            habit.KanbanStatus = KanbanStatus.Done;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MoveToTodo(int id)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+
+            var habit = await _context.Habits
+                .FirstOrDefaultAsync(h => h.Id == id && h.UserId == currentUser.Id);
+
+            if (habit == null)
+            {
+                return NotFound();
+            }
+
+            var today = DateTime.Today;
+
+            var existingLog = await _context.HabitLogs
+                .FirstOrDefaultAsync(hl => hl.HabitId == habit.Id && hl.LogDate.Date == today);
+
+            if (existingLog != null)
+            {
+                _context.HabitLogs.Remove(existingLog);
+            }
+
+            if (habit.Status != HabitStatus.Completed)
+            {
+                habit.EndDate = null;
+            }
+
+            habit.KanbanStatus = KanbanStatus.Todo;
 
             await _context.SaveChangesAsync();
 
@@ -214,6 +236,7 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
             habit.Status = HabitStatus.Completed;
             habit.EndDate = today;
+            habit.KanbanStatus = KanbanStatus.Done;
 
             if (_scheduleService.IsHabitPlannedForDate(habit, today))
             {
@@ -261,75 +284,11 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
 
             habit.Status = HabitStatus.Active;
             habit.EndDate = null;
+            habit.KanbanStatus = KanbanStatus.InProgress;
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool HasImplicitCompletion(Habit habit)
-        {
-            return habit.Status == HabitStatus.Completed && habit.EndDate.HasValue;
-        }
-
-        private bool HasMissedOccurrences(Habit habit)
-        {
-            var today = DateTime.Today;
-
-            DateTime rangeEnd;
-
-            if (habit.Status == HabitStatus.Completed && habit.EndDate.HasValue)
-            {
-                rangeEnd = habit.EndDate.Value.Date;
-            }
-            else
-            {
-                rangeEnd = today;
-            }
-
-            if (rangeEnd < habit.StartDate.Date)
-            {
-                return false;
-            }
-
-            var loggedDates = habit.HabitLogs
-                .Select(hl => hl.LogDate.Date)
-                .Distinct()
-                .ToHashSet();
-
-            for (var date = habit.StartDate.Date; date <= rangeEnd; date = date.AddDays(1))
-            {
-                if (!_scheduleService.IsHabitPlannedForDate(habit, date))
-                {
-                    continue;
-                }
-
-                if (date >= today && habit.Status != HabitStatus.Completed)
-                {
-                    continue;
-                }
-
-                if (loggedDates.Contains(date))
-                {
-                    continue;
-                }
-
-                if (IsImplicitlyCompletedForDate(habit, date))
-                {
-                    continue;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool IsImplicitlyCompletedForDate(Habit habit, DateTime date)
-        {
-            return habit.Status == HabitStatus.Completed &&
-                   habit.EndDate.HasValue &&
-                   habit.EndDate.Value.Date == date.Date;
         }
     }
 }

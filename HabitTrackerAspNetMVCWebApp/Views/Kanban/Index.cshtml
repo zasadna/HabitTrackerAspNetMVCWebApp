@@ -6,7 +6,7 @@
 <div class="page-intro">
     <div>
         <h1>Kanban Board</h1>
-        <p class="mb-0">Todo = no activity and no missed planned days. In Progress = activity exists or there are missed planned days. Done = habit is completed and has no missed planned days.</p>
+        <p class="mb-0">Today board state is driven by Kanban status. Calendar actions for today sync this board.</p>
     </div>
 </div>
 
@@ -38,10 +38,15 @@
                             <input type="hidden" name="id" value="@habit.Id" />
                             <button type="submit" class="btn btn-sm btn-primary">Start Today</button>
                         </form>
+                        <form asp-action="MarkTodayComplete" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-success">Mark Today Complete</button>
+                        </form>
                         <form asp-action="CompleteHabit" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@habit.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-success">Complete</button>
+                            <button type="submit" class="btn btn-sm btn-outline-dark">Complete Habit</button>
                         </form>
                     </div>
                 </article>
@@ -81,10 +86,15 @@
                             <input type="hidden" name="id" value="@habit.Id" />
                             <button type="submit" class="btn btn-sm btn-primary">Mark Today Complete</button>
                         </form>
+                        <form asp-action="MoveToTodo" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Move to Todo</button>
+                        </form>
                         <form asp-action="CompleteHabit" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@habit.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-success">Complete Habit</button>
+                            <button type="submit" class="btn btn-sm btn-outline-dark">Complete Habit</button>
                         </form>
                     </div>
                 </article>
@@ -119,10 +129,15 @@
                         <div><strong>Log Entries:</strong> @habit.HabitLogs.Count</div>
                     </div>
                     <div class="kanban-actions">
+                        <form asp-action="MoveToTodo" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@habit.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Move to Todo</button>
+                        </form>
                         <form asp-action="ReopenHabit" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@habit.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">Reopen Habit</button>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Reopen Habit</button>
                         </form>
                     </div>
                 </article>

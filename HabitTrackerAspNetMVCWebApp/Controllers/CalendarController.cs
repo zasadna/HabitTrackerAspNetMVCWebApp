@@ -102,6 +102,27 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 existingLog.Status = status;
             }
 
+            if (targetDate == DateTime.Today)
+            {
+                if (status == HabitLogStatus.Completed)
+                {
+                    habit.KanbanStatus = KanbanStatus.Done;
+                }
+                else if (status == HabitLogStatus.PartiallyCompleted)
+                {
+                    habit.KanbanStatus = KanbanStatus.InProgress;
+                }
+                else
+                {
+                    habit.KanbanStatus = KanbanStatus.Todo;
+                }
+
+                if (habit.Status != HabitStatus.Completed)
+                {
+                    habit.EndDate = null;
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { year, month });
@@ -129,21 +150,19 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
             if (existingLog != null)
             {
                 _context.HabitLogs.Remove(existingLog);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index), new { year, month });
             }
 
-            var isImplicitCompleted =
-                habit.Status == HabitStatus.Completed &&
-                habit.EndDate.HasValue &&
-                habit.EndDate.Value.Date == targetDate;
-
-            if (isImplicitCompleted)
+            if (targetDate == DateTime.Today)
             {
-                habit.Status = HabitStatus.Active;
-                await _context.SaveChangesAsync();
+                habit.KanbanStatus = KanbanStatus.Todo;
+
+                if (habit.Status != HabitStatus.Completed)
+                {
+                    habit.EndDate = null;
+                }
             }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { year, month });
         }
@@ -191,6 +210,13 @@ namespace HabitTrackerAspNetMVCWebApp.Controllers
                 else
                 {
                     existingLog.Status = HabitLogStatus.Completed;
+                }
+
+                habit.KanbanStatus = KanbanStatus.Done;
+
+                if (habit.Status != HabitStatus.Completed)
+                {
+                    habit.EndDate = null;
                 }
             }
 
