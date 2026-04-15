@@ -19,6 +19,21 @@ Admins can additionally:
 - review habits across users
 - seed demo data for presentation and testing
 
+## Project Structure
+
+```text
+HabitTrackerAspNetMVCWebApp/
+├── Controllers/
+├── Data/
+├── Models/
+├── Services/
+├── ViewModels/
+├── Views/
+├── Areas/Identity/
+├── wwwroot/
+└── Migrations/
+```
+
 ## Features
 
 ### Authentication and authorization
